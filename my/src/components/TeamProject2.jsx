@@ -22,7 +22,7 @@ const ProjectDetailContainer = styled(motion.div)`
 
 const ContentWrapper = styled(motion.div)``;
 
-const ProjectHeader = styled(motion.header)` // 아이템
+const ProjectHeader = styled(motion.header)` 
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--placeholder-bg);
@@ -31,7 +31,7 @@ const ProjectHeader = styled(motion.header)` // 아이템
   p { font-size: 1.1em; color: var(--secondary-text-color); }
 `;
 
-const ProjectSection = styled(motion.section)` // 아이템
+const ProjectSection = styled(motion.section)` 
   margin-bottom: 2rem;
 
   h3 {
@@ -45,6 +45,25 @@ const StyledLink = styled.a`
   color: var(--accent-color);
   text-decoration: underline;
   &:hover { opacity: 0.8; }
+`;
+
+const TechStackList = styled.ul`
+  list-style: none; 
+  padding-left: 0;
+  margin-bottom: 1.5rem;
+
+  li {
+    margin-bottom: 0.7rem;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  strong { 
+    font-weight: 600;
+    color: var(--primary-color); 
+    margin-right: 0.5em;
+    min-width: 20px; 
+  }
 `;
 
 const StyledInternalLink = styled(Link)`
@@ -101,10 +120,12 @@ export default function TeamProject2() {
 
         <ProjectSection variants={itemVariants}>
           <h3>기술 스택</h3>
-          <p>Backend: Spring Boot, Java, ...</p>
-          <p>Frontend: ...</p>
-          <p>Database: ...</p>
-          <p>Infra/DevOps: ...</p>
+          <TechStackList>
+            <li><strong>Backend:</strong>Spring Boot, Java, ...</li>
+            <li><strong>Frontend:</strong>...</li>
+            <li><strong>Database:</strong>...</li>
+            <li><strong>Infra/DevOps:</strong>...</li>
+          </TechStackList>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
@@ -121,7 +142,7 @@ export default function TeamProject2() {
           <h3>관련 링크</h3>
           <p><StyledLink href="#github-repo-url" target="_blank" rel="noopener noreferrer">GitHub Repository</StyledLink></p>
         </ProjectSection>
-
+        
         <ProjectSection variants={itemVariants}>
           <h3>상세 구현 과정</h3>
           <StyledInternalLink to="/projects/team-2/details">

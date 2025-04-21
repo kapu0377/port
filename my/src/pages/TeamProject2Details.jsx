@@ -101,6 +101,57 @@ const StyledInternalLink = styled(Link)`
   &:hover { opacity: 0.8; }
 `;
 
+const ImageContainer = styled.div`
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  
+  ${media.mobile} {
+    margin: 1rem 0;
+  }
+`;
+
+const ProjectImage = styled.img`
+  width: 100%;
+  display: block;
+  margin-bottom: 0.5rem;
+  max-height: 500px;
+  object-fit: contain;
+  
+  &[src$=".gif"] {
+    max-height: 400px;
+    object-fit: cover;
+    margin: 0 auto;
+  }
+  
+  ${media.tablet} {
+    max-height: 400px;
+    
+    &[src$=".gif"] {
+      max-height: 350px;
+    }
+  }
+  
+  ${media.mobile} {
+    max-height: 300px;
+    
+    &[src$=".gif"] {
+      max-height: 250px;
+    }
+  }
+`;
+
+const ImageCaption = styled.p`
+  font-size: 0.9rem;
+  color: var(--secondary-text-color);
+  text-align: center;
+  margin-top: 0.5rem;
+  
+  ${media.mobile} {
+    font-size: 0.8rem;
+  }
+`;
 
 export default function TeamProject2Details() {
   return (

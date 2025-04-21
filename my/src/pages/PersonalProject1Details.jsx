@@ -3,9 +3,20 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { pageVariants, pageTransition, containerVariants, itemVariants } from '../utils/animations';
 import { Link } from 'react-router-dom';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
+import ini from 'react-syntax-highlighter/dist/esm/languages/prism/ini';
+import javascript from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
+import java from 'react-syntax-highlighter/dist/esm/languages/prism/java';
 import { media } from '../utils/mediaQueries';
+
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('sql', sql);
+SyntaxHighlighter.registerLanguage('ini', ini);
+SyntaxHighlighter.registerLanguage('javascript', javascript);
+SyntaxHighlighter.registerLanguage('java', java);
 
 const ProjectDetailContainer = styled(motion.div)`
   padding: 4rem 1rem;
@@ -118,6 +129,30 @@ const ProjectImage = styled.img`
   width: 100%;
   display: block;
   margin-bottom: 0.5rem;
+  max-height: 500px;
+  object-fit: contain;
+  
+  &[src$=".gif"] {
+    max-height: 400px;
+    object-fit: cover;
+    margin: 0 auto;
+  }
+  
+  ${media.tablet} {
+    max-height: 400px;
+    
+    &[src$=".gif"] {
+      max-height: 350px;
+    }
+  }
+  
+  ${media.mobile} {
+    max-height: 300px;
+    
+    &[src$=".gif"] {
+      max-height: 250px;
+    }
+  }
 `;
 
 const ImageCaption = styled.p`
