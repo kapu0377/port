@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { media } from '../utils/mediaQueries';
 import { FaBan, FaParking, FaLuggageCart, FaClipboardList, FaReact, FaServer, FaDatabase, FaTools } from 'react-icons/fa';
 import { SiSpringboot, SiMariadb } from "react-icons/si";
+import { PreviewBox, PreviewFrame } from '../styles/GlobalStyles';
 
 const ProjectDetailContainer = styled(motion.div)` 
   padding: 4rem 1rem;
@@ -259,7 +260,7 @@ export default function TeamProject1() {
               <div className="icon-wrapper"><FaClipboardList /></div>
               <div className="text-wrapper">
                 <h4>커뮤니티 및 FAQ</h4>
-                <p>여행객 간 정보 교류(팁, 후기)를 활성화하고 FAQ를 통해 기본적인 궁금증을 해소하는 공간을 제공합니다.</p>
+                <p>여행객 간 정보 교류(팁, 후기)를 활성화하고 `FAQ`를 통해 기본적인 궁금증을 해소하는 공간을 제공합니다.</p>
               </div>
             </GoalItem>
           </GoalGrid>
@@ -269,11 +270,11 @@ export default function TeamProject1() {
           <h3>주요 기능</h3>
           <FeatureList>
             <li><strong>메인 홈페이지:</strong> 캐러셀 배너, 핵심 기능(항공편 조회, 금지물품 검색) 빠른 접근, 검색 순위, 부가 정보(유튜브, 이미지, 주차 현황, 최신글) 제공</li>
-            <li><strong>로그인/회원가입:</strong> 기본 인증, 비밀번호 이중 확인 및 암호화, Token 기반 로그인 유지</li>
+            <li><strong>로그인/회원가입:</strong> 기본 인증, 비밀번호 이중 확인 및 암호화, `Token` 기반 로그인 유지</li>
             <li><strong>금지 물품:</strong> 카테고리별 분류, 도표를 이용한 시각화, 사용자 검색 기능, 검색 기록 저장 및 조회</li>
-            <li><strong>게시판:</strong> 게시글 CRUD, 댓글 기능, 게시글 검색, FAQ 제공, 본인 확인 로직</li>
-            <li><strong>주차 현황:</strong> 오픈 API 연동 실시간 정보, 주차 요금, 공항 홈페이지/지도 연동, 만족도 평가</li>
-            <li><strong>체크리스트:</strong> 개인 맞춤형 리스트 생성/관리 (카테고리/아이템 CRUD), 편집 모드, 전체 상태 초기화</li>
+            <li><strong>게시판:</strong> 게시글 `CRUD`, 댓글 기능, 게시글 검색, `FAQ` 제공, 본인 확인 로직</li>
+            <li><strong>주차 현황:</strong> 오픈 `API` 연동 실시간 정보, 주차 요금, 공항 홈페이지/지도 연동, 만족도 평가</li>
+            <li><strong>체크리스트:</strong> 개인 맞춤형 리스트 생성/관리 (카테고리/아이템 `CRUD`), 편집 모드, 전체 상태 초기화</li>
             <li><strong>회원 정보 관리:</strong> 회원 정보 수정 (이메일 수정 불가), 회원 탈퇴 (비밀번호 확인, 관련 데이터 연쇄 삭제)</li>
           </FeatureList>
         </ProjectSection>
@@ -284,22 +285,22 @@ export default function TeamProject1() {
             <TechItem>
               <div className="icon-wrapper"><FaReact /></div> 
               <h4>Frontend</h4>
-              <p>Node.js, JavaScript, React</p>
+              <p>`Node.js`, `JavaScript`, `React`</p>
             </TechItem>
             <TechItem>
               <div className="icon-wrapper"><SiSpringboot /></div>
               <h4>Backend</h4>
-              <p>Spring Boot, Spring Security, JPA/Hibernate</p>
+              <p>`Spring Boot`, `Spring Security`, `JPA`/`Hibernate`</p>
             </TechItem>
             <TechItem>
               <div className="icon-wrapper"><SiMariadb /></div>
               <h4>Database</h4>
-              <p>MariaDB</p>
+              <p>`MariaDB`</p>
             </TechItem>
             <TechItem>
               <div className="icon-wrapper"><FaTools /></div> 
               <h4>Dev tool</h4>
-              <p>VS Code, IntelliJ IDEA</p>
+              <p>`VS Code`, `IntelliJ IDEA`</p>
             </TechItem>
           </TechGrid>
         </ProjectSection>
@@ -307,9 +308,9 @@ export default function TeamProject1() {
         <ProjectSection variants={itemVariants}>
           <h3>나의 역할 및 기여</h3>
           <FeatureList>
-            <li>홈페이지 UI/UX 설계</li>
+            <li>홈페이지 `UI`/`UX` 설계</li>
             <li>로그인/회원가입 기능 구현</li>
-            <li>백엔드 JWT 토큰 인증 설정</li>
+            <li>백엔드 `JWT` 토큰 인증 설정</li>
             <li>기내 반입 가능 여부 조회 기능 구현</li>
             <li>일간/주간/월간 카테고리 검색 순위 기능 구현</li>
           </FeatureList>
@@ -320,27 +321,27 @@ export default function TeamProject1() {
           <p>EZPZ 프로젝트를 통해 항공 여행객들이 겪는 정보 접근성 문제와 안전 염려를 해소하기 위한 통합 웹 플랫폼을 성공적으로 구축했습니다. 복잡한 규정 시각화, 실시간 데이터 연동, 개인화된 체크리스트 기능 등을 구현하며 사용자 중심의 서비스 설계의 중요성을 체감했습니다.</p>
           <LearnedPointsList>
             <li>
-              <strong>체계적인 프로젝트 관리 경험</strong> 요구사항 분석부터 Usecase 정의, ERD 설계, WBS 기반 작업 분담까지 프로젝트 전 과정 경험
+              <strong>체계적인 프로젝트 관리 경험</strong> 요구사항 분석부터 `Usecase` 정의, `ERD` 설계, `WBS` 기반 작업 분담까지 프로젝트 전 과정 경험
             </li>
             <li>
-              <strong>협업 능력 향상</strong> 팀원들과의 소통 및 Git을 활용한 버전 관리를 통한 효과적인 협업 수행
+              <strong>협업 능력 향상</strong> 팀원들과의 소통 및 `Git`을 활용한 버전 관리를 통한 효과적인 협업 수행
             </li>
             <li>
-              <strong>풀스택 개발 역량 강화</strong> Spring Boot(Backend)와 React(Frontend)를 함께 사용하여 웹 서비스 전체 구조 이해 및 개발 경험 확보
+              <strong>풀스택 개발 역량 강화</strong> `Spring Boot`(`Backend`)와 `React`(`Frontend`)를 함께 사용하여 웹 서비스 전체 구조 이해 및 개발 경험 확보
             </li>
             <li>
-              <strong>문제 해결 능력 증진</strong> API 설계 및 연동 과정 등에서 발생한 다양한 기술적 문제들을 직접 진단하고 해결
+              <strong>문제 해결 능력 증진</strong> `API` 설계 및 연동 과정 등에서 발생한 다양한 기술적 문제들을 직접 진단하고 해결
             </li>
              <li>
-              <strong>사용자 중심 설계 이해</strong> 사용자 피드백과 사용성을 고려한 UI/UX 설계 및 기능 구현의 중요성 학습
+              <strong>사용자 중심 설계 이해</strong> 사용자 피드백과 사용성을 고려한 `UI`/`UX` 설계 및 기능 구현의 중요성 학습
             </li>
           </LearnedPointsList>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
           <h3>관련 링크</h3>
-          <p><StyledLink href="{/* GitHub Repository URL */}" target="_blank" rel="noopener noreferrer">GitHub Repository</StyledLink></p>
-          <p><StyledLink href="{/* Live Demo URL */}" target="_blank" rel="noopener noreferrer">Live Demo (있다면)</StyledLink></p>
+          <p><StyledLink href="https://github.com/kapu0377/EZPZ" target="_blank" rel="noopener noreferrer">`GitHub Repository`</StyledLink></p>
+          <p><StyledLink href="https://caff.pw/" target="_blank" rel="noopener noreferrer">EZPZ 플랫폼 바로가기</StyledLink></p>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>

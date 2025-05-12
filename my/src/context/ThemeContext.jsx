@@ -1,17 +1,18 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    const savedTheme = window.localStorage.getItem('theme');
-    
-    if (savedTheme) {
-      return savedTheme;
+    if (typeof window !== 'undefined') {
+      const savedTheme = window.localStorage.getItem('theme');
+      if (savedTheme) {
+        return savedTheme;
+      }
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      return prefersDark ? 'dark' : 'light';
     }
-    
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    return prefersDark ? 'dark' : 'light';
+    return 'light';
   });
 
   const toggleTheme = () => {
@@ -19,25 +20,25 @@ export const ThemeProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    window.localStorage.setItem('theme', theme);
-    
-    if (theme === 'dark') {
-      document.body.setAttribute('data-theme', 'dark');
-    } else {
-      document.body.removeAttribute('data-theme');
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('theme', theme);
+      if (theme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+      } else {
+        document.body.removeAttribute('data-theme');
+      }
     }
   }, [theme]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
     const handleChange = (e) => {
       const hasUserSetTheme = window.localStorage.getItem('theme') !== null;
       if (!hasUserSetTheme) {
         setTheme(e.matches ? 'dark' : 'light');
       }
     };
-    
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
@@ -54,4 +55,4 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
-export const useTheme = () => useContext(ThemeContext); 
+export default ThemeContext; 

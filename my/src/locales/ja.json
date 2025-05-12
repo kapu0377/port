@@ -1,0 +1,406 @@
+{
+  "translation": {
+    "project": {
+      "title": "チームプロジェクト2: WORK OUT実装の詳細",
+      "description": "このドキュメントはWORK OUTプロジェクトの開発における技術的決定と主要機能の実装方法について詳細に説明します。",
+      "architecture": {
+        "title": "1. プロジェクト構造設計（アーキテクチャ）",
+        "description": "プロジェクトの保守性と拡張性を考慮し、明確な役割分担に重点を置いたアーキテクチャを設計しました。",
+        "layers": {
+          "controller": "レイヤー構造",
+          "controller.description": "ウェブリクエストを受け取る`Controller`、コアビジネスロジックを処理する`Service`、データベースアクセスを担当する`Repository`と役割を明確に分ける`3層アーキテクチャ`を基本構造としました。これにより各部分の責任が明確になり、コード変更時に他の部分への影響を最小限に抑えることができます。",
+          "service": "エンティティ設計",
+          "service.description": "複数のテーブルで共通して使用される作成日時、更新日時などのフィールドは`BaseEntity`という共通クラスを作成して継承するようにしました。これによりコードの重複を減らし、エンティティ管理が容易になりました。",
+          "repository": "`DTO`パターンの活用",
+          "repository.description": "レイヤー間でデータをやり取りする際には、各レイヤーに必要な情報のみを含む`DTO`(`Data Transfer Object`)を使用しました。これによりレイヤー間の依存性を低く抑え、`API`仕様変更や内部ロジック修正時に柔軟に対応できるようになりました。"
+        },
+        "diagram": "アーキテクチャ構成図",
+        "diagram.description": "`3層アーキテクチャ`: `Controller` - `Service` - `Repository`\n`Entity`は`BaseEntity`を継承、`DTO`はレイヤー間データ転送に使用"
+      },
+      "dataModeling": {
+        "title": "2. データモデリング",
+        "description": "サービスの核となる機能を中心にデータベーススキーマを設計しました。",
+        "entityOverview": "主要エンティティと関係の概要",
+        "relationship": "関係設計",
+        "relationship.description": "関係（例：1つの投稿に複数の画像/コメント）、多対一(N:1)関係（複数の投稿が1人の作成者を参照）など、実際のサービスフローに合わせて設計しました。",
+        "inheritance": "継承の活用",
+        "baseEntity": "`BaseEntity`",
+        "inheritance.description": "継承を通じて作成日時、更新日時などの共通フィールドを効率的に管理し、コードの重複を減らしました。",
+        "otherCommonFields": "作成日時と更新日時に加えて、必要に応じて削除フラグやステータスコードなどの他の共通フィールドを追加できます。",
+        "otherFields": "画像やコメント関係の他にも、タグ、カテゴリ、いいねなど必要なフィールドを追加定義できます。",
+        "mappedSuperclass": "JPAで継承マッピングのための親クラスとして使用されます。実際のテーブルとしては作成されず、子エンティティクラスにマッピング情報のみを提供します。",
+        "entityListeners": "エンティティのライフサイクルイベントを検出してコールバックメソッドを呼び出すリスナーを指定します。AuditingEntityListenerは作成日時と更新日時を自動的に管理します。",
+        "createdDate": "エンティティが作成されるときに現在時刻を自動的に保存するフィールドをマークします。Spring Data JPA Auditing機能を使用します。",
+        "lastModifiedDate": "エンティティが変更されるときに現在時刻に自動更新されるフィールドをマークします。Spring Data JPA Auditing機能を使用します。",
+        "entity": "このクラスがJPAエンティティであることを示し、接続されたデータベーステーブルにマッピングされます。",
+        "id": "エンティティの主キー（Primary Key）をマークします。",
+        "generatedValue": "主キー値を自動生成する戦略を指定します。デフォルト値はAUTOで、データベースに応じて適切な戦略を選択します。",
+        "manyToOne": "多対一（N:1）関係を設定します。複数のエンティティが1つのエンティティを参照する場合に使用されます。",
+        "oneToMany": "一対多（1:N）関係を設定します。1つのエンティティが複数のエンティティを参照する場合に使用されます。",
+        "mappedBy": "双方向関係において、関連の所有者ではない側から所有者を指定します。ここでは、Boardエンティティのboardフィールドが関連の所有者です。"
+      },
+      "realTimeVideo": {
+        "title": "3.1 リアルタイムビデオ通話システム（WebRTC & WebSocket）",
+        "goal": "目標",
+        "feature1": "トレーナーとメンバーがオンラインでリアルタイムに運動姿勢を確認し、フィードバックを交換できる環境を提供します。",
+        "feature2": "1対1のパーソナルトレーニングだけでなく、複数人が参加する1対N運動セッションもサポートします。",
+        "implementation": "実装方法",
+        "implementation.step1": "`WebRTC`技術をベースにブラウザ間のリアルタイム音声およびビデオデータの`P2P`直接転送機能を実装しました。",
+        "implementation.step2": "この過程で必要な接続情報交換、つまりシグナリングは`WebSocket`と`STOMP`プロトコルを活用して処理しました。",
+        "implementation.step3": "フロントエンド側では`roomList.html`、`roomCreate.html`、`room.html`などのページで`videoCall.js`ファイルを通じて`WebRTC`および`WebSocket`関連ロジックを担当させ、バックエンドは`Spring Boot`フレームワークをベースに`WebSocketConfig`、`Controller`、`Service`、そしてデータベース連携構造で設計し、全体システムを安定的にサポートするよう構築しました。",
+        "issues": "問題点",
+        "issues.issue1": "これらの機能を実装する過程でいくつかの技術的な問題に直面しました。",
+        "issues.issue2": "まず、`WebRTC`と`WebSocket`プロトコルの両方がブラウザの同一オリジンポリシー(`SOP`)および`CORS`(`Cross-Origin Resource Sharing`)ポリシーに敏感に反応し、特定のセキュリティヘッダー（例：`CSRF`トークン関連設定）により接続が予期せず遮断される状況が発生しました。",
+        "issues.issue3": "また、セキュリティ上の理由から`getUserMedia`のようなユーザーのメディアデバイスにアクセスする`WebRTC` `API`は`HTTPS`環境でのみ正常に動作するため、開発およびテスト段階から`HTTPS`環境構築が必須でした。",
+        "solutions": "解決策",
+        "solutions.solution1": "これらの問題を解決するために次のようなアプローチを適用しました。",
+        "solutions.solution2": "第一に、ブラウザ接続遮断問題を解消するためバックエンドの`Spring Security`設定で`CORS`関連で許可する出所（`Origin`）、`HTTP`メソッド、そしてヘッダーを明示的に指定し、これとともに`SockJS`ライブラリの関連オプションを細かく調整して`WebSocket`接続時に発生し得るヘッダー関連の問題も追加で解決しました。",
+        "solutions.solution3": "第二に、`WebRTC` `API`互換性の確保および転送データセキュリティ強化のため開発環境と実際のサービス展開環境の両方に`HTTPS`プロトコルを義務的に適用しました。",
+        "frontendLogic": "フロントエンド主要ロジック例（`videoCall.js`）",
+        "frontendLogic.description": "以下は`WebRTC`接続設定、シグナリングメッセージ処理、ビデオストリーム管理などの核心ロジックを含むフロントエンド`JavaScript`コードの一部です。",
+        "demoImage": "図1：`WebRTC`ベースのリアルタイムビデオトレーニングデモ画像（例）",
+        "startDemo": "`WebRTC`デモ開始",
+        "endDemo": "デモ終了"
+      },
+      "boardSystem": {
+        "title": "3.2 掲示板システム（フリーボード＆エクササイズボード）",
+        "goal": "目標",
+        "description": "このシステムの目標はユーザーが自由に記事を書き、様々な情報を共有できるコミュニティスペース（フリーボード、エクササイズボード）を提供することです。",
+        "implementation": "実装方法",
+        "implementation.step1": "これを実装するために`Spring MVC`パターン（`Controller`-`Service`-`Repository`レイヤー構造）をベースに基本的な投稿`CRUD`（作成、閲覧、更新、削除）機能はもちろん、ファイルアップロード、コメント管理、そしてページングおよび検索機能まで開発しました。",
+        "implementation.step2": "特に、様々な条件による動的クエリ生成と効率的なページング処理をサポートするために`QueryDSL`ライブラリを導入して活用しました。",
+        "potentialIssues": "潜在的な問題点",
+        "issue1": "しかし実装過程で将来発生し得る潜在的な問題点を考慮しました。",
+        "issue2": "例えば、掲示板にデータが大量に蓄積された場合、閲覧性能が低下する可能性や、ユーザーの検索条件が複雑になるほど実行されるデータベースクエリの最適化が必要という点でした。",
+        "solutions": "解決策",
+        "solution1": "これらの潜在的な問題に先制的に対応し、システム性能を確保するために次のような解決策を適用しました。",
+        "solution2": "第一に、`QueryDSL`を積極的に活用して複雑で多様な検索条件に対しても最適化された動的クエリが生成されるよう実装することで検索性能を改善しました。",
+        "carousel": {
+          "boardList": "図1：掲示板リストとページング",
+          "boardView": "図2：投稿閲覧",
+          "boardWrite": "図3：投稿作成とファイル添付",
+          "boardSearch": "図4：掲示板検索機能"
+        }
+      },
+      "queryDsl": {
+        "title": "QueryDSL使用パターン要約：動的/複合条件処理",
+        "description": "掲示板システムの複雑な検索機能を効率的に実装するために、QueryDSLのJPQLQueryとBooleanBuilderを組み合わせて使用する方式を採用しました。",
+        "additionalDescription": "特に、様々な条件による動的クエリ生成と効率的なページング処理をサポートするために、QueryDSLライブラリを導入して活用しました。",
+        "codeExample1": "コード例1：JPQLQueryベースの基本クエリと条件追加",
+        "codeExample2": "コード例2：BooleanBuilderを使用した動的条件生成と適用",
+        "introduction": "まず、基本的なクエリ構造はJPQLQueryオブジェクトをベースに作成しました。from()メソッドを使用してクエリのメインターゲットを指定し、追加データが必要な場合はleftJoin()などのメソッドを使用して関連エンティティを結合しました。検索キーワード入力など比較的単純または固定の基本条件は、JPQLQueryのwhere()句に直接追加しました。",
+        "booleanBuilder": "しかし、ユーザーの検索タイプ選択（タイトルで検索、内容で検索、著者で検索など）や複数のフィルター条件の組み合わせなど、リクエストに応じて動的に変更する必要がある複雑な条件は、BooleanBuilderを使用して構成しました。BooleanBuilderは、ビジネスロジックに従って個々の条件（Predicate）をandまたはorメソッドで柔軟に接続し、最終的な複合条件を動的に生成する役割を果たしました。BooleanBuilderを通じて作成されたこれらの動的条件は、最終的にJPQLQueryオブジェクトのwhere()句に統合され、実行時に最適化された完成形のクエリがデータベースに送信されるように実装しました。"
+      },
+      "memberManagement": {
+        "title": "3.3 会員管理システム（Member）",
+        "goal": "目標",
+        "feature1": "安全で便利な会員認証、認可、情報修正、権限管理機能を提供します。",
+        "feature2": "ユーザー体験を最優先に考慮したUI/UXを実装します。",
+        "implementation": "実装方法",
+        "implementation.step1": "Spring Securityをベースに認証および認可機能を実装し、CustomUserDetailsServiceを通じてユーザー情報をロードし、BCryptアルゴリズムでパスワードを暗号化して管理します。また、役割（Role）に応じた細分化された権限管理機能を適用しました。",
+        "implementation.step2": "追加的にID重複チェック機能と会員情報修正時に必要なフィールドのみを選択的に更新する機能を実装しました。",
+        "issues": "問題点",
+        "issue1": "実装過程でセッション（Session）管理、CSRF（Cross-Site Request Forgery）攻撃などのような一般的なウェブセキュリティ脆弱性への対策策定が必要でした。",
+        "issue2": "また、会員が自分の情報を変更する際にデータの一貫性と正確性、つまりデータ整合性を維持することが重要な課題でした。",
+        "solutions": "解決策",
+        "solution1": "Spring Securityが提供する内蔵機能を活用してセッション管理ポリシー、Cookie設定、CSRF防御、CORS（Cross-Origin Resource Sharing）ポリシーなどを適切に構成し、システムセキュリティレベルを高めました。",
+        "solution2": "データ整合性確保のため、クライアントからデータを受け取る際にDTO（Data Transfer Object）パターンを使用し、サーバー側でデータ妥当性検査（Validation）ロジックを適用して誤ったデータがシステムに入力されることを防止しました。",
+        "security": "セキュリティおよびデータ整合性実装詳細",
+        "sessionManagement": "1. セッション（Session）管理",
+        "sessionManagement.step1": "ログイン成功時にHttpSessionに会員情報を保存し、ログアウト時にセッションを無効化する方式でユーザー認証状態を管理しました。",
+        "sessionManagement.step2": "セッション固定攻撃防止のため認証成功時にセッションIDを自動的に変更する設定を適用しました。",
+        "sessionManagement.step3": "1アカウントあたりの同時セッション数を制限し、複数ログインによるセキュリティリスクを低減するようにしました。",
+        "csrf": "2. CSRF（Cross-Site Request Forgery）対応",
+        "csrf.step1": "Spring SecurityのCSRF防御機能を有効化し、すべての状態変更リクエスト（POST、PUT、DELETEなど）にCSRFトークン検証を適用しました。",
+        "csrf.step2": "ログインや会員登録など特定のパスのみをCSRF検証から例外として処理しました。",
+        "csrf.step3": "すべてのHTMLフォームとAJAXリクエストにCSRFトークンを含めるよう実装しました。",
+        "dataConsistency": "3. 会員情報変更時のデータ整合性",
+        "dataConsistency.step1": "会員情報修正時に変更されたフィールドのみを選択的に更新する方式を適用し、不要なデータ変更や損失を防止しました。",
+        "dataConsistency.step2": "ドメインオブジェクト内部に各フィールド別の変更メソッドを定義し、一貫した方法でデータを変更できるようにしました。",
+        "dataConsistency.step3": "Bean Validationアノテーションを使用してDTO段階からデータ妥当性を検証しました。",
+        "otherSecurity": "4. その他のセキュリティ設定",
+        "otherSecurity.step1": "HTTPレスポンスヘッダーにセキュリティ関連ヘッダーを追加してXSS（Cross-Site Scripting）、クリックジャッキング（Clickjacking）などの攻撃を防止しました。",
+        "otherSecurity.step2": "すべてのCookieにHttpOnly、SameSite属性を適用してCookie窃取や悪意ある使用を困難にしました。",
+        "otherSecurity.step3": "会員退会のような機密な作業には@PreAuthorizeを通じた権限検証を追加して本人のみが実行できるよう制限しました。",
+        "mainScreen": "会員管理主要画面",
+        "mainScreen.description": "会員管理システムの主要画面で、ログイン画面からマイページ、会員情報修正などを確認できます。",
+        "mainScreen.carousel": {
+          "login": "図1：ログイン画面 - Spring Securityベースの認証処理",
+          "join": "図2：会員登録画面 - 妥当性検証および重複チェック",
+          "mypage": "図3：マイページ - 会員情報確認および管理"
+        },
+        "findExistingMember": "既存の会員情報を照会（存在しない場合は例外を発生）",
+        "passwordEncryption": "パスワード変更時に暗号化処理",
+        "selectiveUpdate": "変更されたフィールドのみを選択的に更新",
+        "otherFieldsUpdate": "その他のフィールドを更新",
+        "transactionSave": "トランザクション内で保存",
+        "enableMethodSecurity": "新しいバージョンでは@EnableMethodSecurityを使用",
+        "pathAccessControl": "必要に応じてパス別アクセス制御を追加",
+        "exceptionHandlers": "必要に応じてアクセス拒否/認証失敗ハンドラーを追加"
+      },
+      "qnaSystem": {
+        "title": "3.4 Q&Aシステム",
+        "description": "Q&Aシステムはユーザーが運動技術、トレーニングプログラムおよびその他のフィットネス関連トピックについて質問し、回答を受け取ることができるプラットフォームを提供します。",
+        "additionalDescription": "トレーナーと会員間の知識共有を促進し、時間の経過とともに価値ある知識ベースを構築できるようこのシステムを設計しました。",
+        "userRequirement": "ユーザーは運動関連の悩みをより良く説明するために画像とともに質問を投稿できる直感的なインターフェースを望んでいました。",
+        "implementation": "すべてのCRUD機能、ファイルアップロード機能およびデスクトップとモバイルデバイスの両方でうまく動作するレスポンシブデザインでQ&Aシステムを実装しました。",
+        
+        "fileUploadTitle": "ファイルアップロード実装",
+        "fileUpload": {
+          "controller": "ファイルアップロードコントローラ実装",
+          "description": "質問ごとに複数の画像添付をサポートするファイルアップロードのためのマルチパートフォームデータを処理するコントローラを実装しました。",
+          "step1": "SpringのMultipartFile APIを使用してアップロードされたファイルを保存する前にファイルタイプとサイズを検証しながら処理しました。",
+          "step2": "名前の衝突を防止し、安定した検索を保証するために各アップロードファイルに固有識別子を付与しました。",
+          "step3": "コントローラはデータベース関係を通じてアップロードされたファイルを対応する質問エンティティと接続します。"
+        },
+        
+        "fileStorageTitle": "ファイル保存実装",
+        "fileStorage": {
+          "description": "ファイル保存のためにサーバーでファイルの物理的保存を管理するサービスレイヤーを実装しました。",
+          "step1": "ファイルはアプリケーションプロパティで指定された設定可能なディレクトリに保存されます。",
+          "step2": "固有性を保証し、パストラバーサル攻撃を防止するためにUUIDベースの命名を使用します。",
+          "step3": "各ファイルのメタデータ（元の名前、サイズ、コンテンツタイプ）は簡単な検索および管理のためにデータベースに保存されます。"
+        },
+        
+        "fileAccessTitle": "ファイルアクセス実装",
+        "fileAccess": {
+          "description": "アップロードされたファイルへの安全なアクセスを提供するために、ファイル検索のための専用エンドポイントを実装しました。",
+          "step1": "ファイルは直接的なファイルパスではなく固有IDでアクセスされ、セキュリティレイヤーが追加されます。",
+          "step2": "システムは拡張子に応じて各ファイルに対する適切なコンテンツタイプを動的に決定します。",
+          "step3": "アクセス制御は必要な場合（例：非公開質問の場合）権限のあるユーザーのみが特定のファイルにアクセスできるようにします。",
+          "getImageResource": "サービスを呼び出して画像リソースを取得",
+          "determineMimeType": "リソースのMIMEタイプを決定",
+          "returnImageResource": "画像リソースとContent-Typeヘッダーを返す",
+          "notFoundResponse": "404 レスポンス",
+          "serverErrorResponse": "500 レスポンス"
+        },
+        
+        "frontendTitle": "フロントエンド実装",
+        "frontend": {
+          "description": "フロントエンド実装はドラッグアンドドロップファイルアップロードおよび画像プレビューがあるユーザーフレンドリーな体験に重点を置いています。",
+          "step1": "ユーザーが質問に簡単に画像を添付できるドラッグアンドドロップ領域を実装しました。",
+          "step2": "提出前に画像プレビューが表示され、ユーザーが添付ファイルを確認できます。",
+          "step3": "フォームはクライアント側（即時フィードバック用）とサーバー側（セキュリティ用）の両方で妥当性検査を処理します。",
+          "successProcessing": "成功時の処理",
+          "registrationError": "登録中にエラーが発生しました"
+        },
+        
+        "carousel": {
+          "qnaList": "図1：検索およびフィルタリング機能付きQ&Aリスト",
+          "qnaWrite": "図2：画像アップロード機能付き質問提出フォーム",
+          "qnaView": "図3：回答付き質問詳細表示"
+        }
+      },
+      "commonComponents": {
+        "title": "共通コンポーネントおよび設定",
+        "goal": "目標",
+        "description": "コードの再利用性と保守性を向上させるために、アプリケーション全体で使用できる共通コンポーネントと設定を設計および実装しました。",
+        "implementation": "実装方法",
+        "additionalDescription": "アプリケーション全体で使用できるユーティリティクラス、カスタムアノテーション、AOP（アスペクト指向プログラミング）コンポーネントおよび設定クラスを作成しました。",
+        "keyFeatures": "主要機能",
+        "keyFeaturesDescription": "共通コンポーネントは一貫したエラー処理、セキュリティ設定、リソース管理などを提供し、均一なユーザー体験とコード標準を保証します。",
+        "solution": "`application`のような環境別設定ファイルを分離し、Springプロファイル機能を活用して各環境に合った設定を体系的に管理し適用できるよう改善しました。",
+        "mainComponents": "主要共通コンポーネント",
+        "webMvcConfig": "WebMvcConfig",
+        "webMvcConfig.step1": "リソース処理、インターセプター、ビューリゾルバなどを含むSpring MVCの動作をカスタマイズするためにWebMvcConfigを実装しました。",
+        "webMvcConfig.cacheDisable": "キャッシュ無効化",
+        "customSecurityConfig": "CustomSecurityConfig",
+        "customSecurityConfig.step1": "アプリケーションを保護するための認証、権限付与および様々なセキュリティ機能を提供するセキュリティ構成を作成しました。",
+        "webSocketConfig": "WebSocketConfig",
+        "webSocketConfig.step1": "リアルタイム通知やチャットなどの機能のためにクライアントとサーバー間のリアルタイム通信を可能にするWebSocketConfigを実装しました。",
+        "uploadConfig": "UploadConfig",
+        "uploadConfig.step1": "保存場所、ファイルサイズ制限および許可されたファイルタイプを管理する、ファイルアップロードのための構成を作成しました。",
+        "globalExceptionHandler": "GlobalExceptionHandler",
+        "globalExceptionHandler.step1": "アプリケーション全体で例外を捕捉する中央集中型エラー処理メカニズムを実装しました。",
+        "globalExceptionHandler.step2": "各タイプの例外は適切に処理され、ユーザーに意味のあるエラーメッセージを提供します。",
+        "globalExceptionHandler.step3": "これにより全アプリケーションで一貫したエラー応答形式を保証します。",
+        "customErrorController": "CustomErrorController",
+        "customErrorController.step1": "404（Not Found）や500（Internal Server Error）などのHTTPエラーステータスコードをユーザーフレンドリーな方法で処理するカスタムエラーコントローラを作成しました。",
+        "thymeleaf": "Thymeleaf設定",
+        "thymeleaf.step1": "カスタム方言とフラグメント処理を通じてアプリケーション全体で一貫したUIを生成するためにテンプレートエンジンとしてThymeleafを設定しました。",
+        "environmentalManagement": "プロジェクト環境（開発、テスト、運用など）が多様化するにつれて、各環境に合った設定を管理することが複雑になる可能性があります。",
+        "inconsistentUserExperience": "予期しないエラーが発生した際、ユーザーに明確でないか一貫性のないエラーメッセージを表示するとユーザー体験が低下する可能性があります。",
+        "configurationManagement": "構成管理",
+        "errorHandling": "エラー処理",
+        "concerns": "問題点および解決策",
+        "environmentalProblem": "開発、テスト、本番など、様々な環境に応じて異なる設定を管理することが面倒になる可能性がありました。",
+        "environmentalSolution": "`application`のような環境別設定ファイルを分離し、Springプロファイル機能を活用して各環境に合った設定を体系的に管理し適用できるよう改善しました。",
+        "userExperienceProblem": "予期せぬエラーが発生した際、ユーザーに不明確または一貫性のないエラーメッセージを表示するとサービス利用体験が低下する可能性があります。",
+        "userExperienceSolution": "`@RestControllerAdvice`と`ErrorController`を導入してアプリケーション全体の例外を一貫して処理し、ユーザーに理解しやすい標準化されたエラーフィードバックを提供することで安定したユーザー体験を維持するようにしました。",
+        "comments": {
+          "webMvcConfig.cacheDisable": "ファビコンのキャッシュを無効化します。（開発中に変更を即座に反映するため）"
+        }
+      },
+      "developmentEnvironment": {
+        "title": "開発環境",
+        "description": "以下はWORK OUTプロジェクトを構築するために使用された開発環境およびツールに関する要約です。",
+        "technology": "技術スタック",
+        "springBoot": "Spring Boot",
+        "springBootDescription": "による迅速な開発環境の構築",
+        "gradle": "Gradle",
+        "gradleDescription": "による依存関係とビルドの自動化",
+        "java": "Java 17",
+        "javaDescription": "ベースの安定したサーバー",
+        "staticResources": "静的リソース",
+        "staticResourcesDescription": "は`/src/main/resources/static`で管理",
+        "deploymentConfiguration": "デプロイ構成",
+        "deploymentConfigurationDescription": "実行可能なJARファイルとしてパッケージング、application-*.propertiesによる環境別設定の分離、パフォーマンス最適化など",
+        "jar": "JAR",
+        "properties": "application-*.properties",
+        "performanceOptimization": "パフォーマンス最適化"
+      },
+      "futureImprovements": {
+        "title": "今後の改善事項",
+        "mobileAppIntegration": "モバイルアプリ統合",
+        "realTimeNotificationSystem": "リアルタイム通知システム高度化",
+        "aiFunction": "AI基盤の運動姿勢分析",
+        "socialLogin": "ソーシャルログイン統合",
+        "mobileAppIntegrationDescription": "REST APIの拡張とモバイルクライアントのサポート",
+        "realTimeNotificationSystemDescription": "WebSocketベースの通知システムの強化",
+        "aiFunctionDescription": "運動姿勢分析とフィードバック機能の追加検討",
+        "socialLoginDescription": "カカオ、Googleなどの外部認証連携"
+      },
+      "closing": {
+        "title": "7. 結論",
+        "description": "WORK OUTプロジェクトは単なる情報共有コミュニティを超え、`WebRTC`と`WebSocket`を活用したリアルタイムビデオトレーニング、`Spring Boot`を基盤とした安定したシステム、`Spring Security`によるセキュリティなど、様々な技術を統合して差別化された体験を提供することを目指しました。今後もより良いサービスを提供するために継続的に改善する予定です。このプロジェクトを通じて得た経験とノウハウは、将来のより発展したサービス開発の基盤となるでしょう。"
+      },
+      "experience": {
+        "title": "WORK OUTを体験してみましょう"
+      },
+      "serviceLinks": {
+        "title": "サービスリンク",
+        "ezpzService": "EZPZサービスへ移動",
+        "githubRepository": "GitHubリポジトリ"
+      }
+    },
+    "codeComments": {
+      "webRtc": {
+        "comment1": "WebSocket接続試行および重複接続防止ロジック開始",
+        "comment2": "SockJSを使用してWebSocketエンドポイント（'/ws'）に接続します。",
+        "comment3": "STOMPクライアントのデバッグメッセージを無効化します。",
+        "comment4": "接続成功後、「join」シグナルを送信してルーム参加を通知します。",
+        "comment5": "接続失敗時、5秒後に再接続を試みます。",
+        "comment6": "STOMPクライアントを介してシグナリングメッセージを送信する関数です。",
+        "comment7": "WebSocketが接続されていない場合、メッセージ送信失敗をログに記録します。",
+        "comment8": "受信したシグナリングメッセージを処理する関数です。",
+        "comment9": "「join」メッセージ：新しい参加者がルームに入室したことを示します。",
+        "comment10": "新しい参加者のためのPeerConnectionを作成し、Offerを作成するように指示します。",
+        "comment11": "「offer」メッセージ：他のピアからSDP Offerを受信しました。",
+        "comment12": "Offer受信および処理中のエラー発生時にログを記録します。",
+        "comment13": "「answer」メッセージ：他のピアからSDP Answerを受信しました。",
+        "comment14": "Answer受信および処理中のエラー発生時にログを記録します。",
+        "comment15": "「candidate」メッセージ：他のピアからICE Candidateを受信しました。",
+        "comment16": "ICE Candidate追加中のエラー発生時にログを記録します。",
+        "comment17": "指定されたremoteIdに対するRTCPeerConnectionオブジェクトを作成する関数です。",
+        "comment18": "新しいPeerConnection作成ログを記録します。",
+        "comment19": "Offerを作成する必要があるかどうかをログに表示します。",
+        "comment20": "既存のPeerConnectionがあれば終了します。",
+        "comment21": "ローカルメディアストリームがあれば、各トラックを新しいPeerConnectionに追加します。",
+        "comment22": "ローカルストリームトラック追加ログを記録します。",
+        "comment23": "ICE Candidate生成時に呼び出されるコールバック関数を設定します。生成されたCandidateを相手に送信します。",
+        "comment24": "リモートピアからメディアトラックを受信したときに呼び出されるコールバック関数を設定します。",
+        "comment25": "リモートトラック受信ログを記録します。",
+        "comment26": "リモートビデオを表示するHTML要素がない場合の処理ロジック（コメントアウト済み）。",
+        "comment27": "リモートビデオストリーム設定ログを記録します。",
+        "comment28": "ICE接続状態変更時にログを記録するコールバック関数を設定します。",
+        "comment29": "Offerを作成する必要がある場合、Offerを作成してLocal Descriptionとして設定した後、相手に送信します。",
+        "comment30": "Offer作成および送信中のエラー発生時にログを記録します。",
+        "comment31": "DOMロード完了後の初期化ロジックです。",
+        "initEvent": "ページロード時にroomIdがあればWebSocket接続を開始します。"
+      },
+      "boardSearch": {
+        "qBoardComment": "QBoardオブジェクトを生成してタイプセーフなクエリ作成を準備します。",
+        "queryComment": "JPQLQueryオブジェクトを生成し、基本的なFROM句を設定します。",
+        "basicCondition": "キーワードが存在し、空でない場合、タイトル(title)にキーワードを含む条件を追加します。",
+        "dynamicCondition": "基本条件として投稿番号(bno)が0Lより大きい条件を追加します。(例: 全投稿対象)"
+      },
+      "booleanBuilder": {
+        "comment1": "動的条件を組み合わせるためのBooleanBuilderオブジェクトを生成します。",
+        "comment2": "検索タイプ文字列（例：「tcw」）を各文字に分割します。",
+        "comment3": "検索タイプとキーワードが有効な場合、OR条件をまとめるための内部BooleanBuilderを生成します。",
+        "comment4": "「t」: タイトル(title)にキーワードを含む条件をORで追加します。",
+        "comment5": "「c」: 内容(content)にキーワードを含む条件をORで追加します。",
+        "comment6": "「w」: 作成者名(writer.userName)にキーワードを含む条件をORで追加します。",
+        "comment7": "内部的にORで結合された条件を、最終的なBooleanBuilderにANDで結合します。",
+        "comment8": "検索タイプ/キーワードがない場合、このブロックはスキップされます。",
+        "comment9": "最終的に構成されたBooleanBuilder条件をJPQLQueryのWHERE句に適用します。"
+      },
+      "security": {
+        "comment1": "セッション有効期限切れ時にリダイレクトされるURLを「/member/login?expired」に設定します。",
+        "comment2": "特定のパス（「/member/login」、「/member/join」など）に対してCSRF保護を無効化します。",
+        "comment3": "会員情報を更新するためのサービスメソッドです。"
+      },
+      "fileUpload": {
+        "comment2": "QnAのタイトルが空の場合、検証チェックを実行し、エラー応答を返します。",
+        "comment3": "QnAサービスのregisterメソッドを呼び出して、QnA情報と添付ファイルを一緒に登録します。",
+        "comment4": "登録成功時、保存されたQnaDTOオブジェクトを含むHTTP 200 OK応答を返します。"
+      },
+      "uploadConfig": {
+        "comment1": "application.propertiesまたはapplication.ymlファイルから「org.zerock.upload.path」プロパティの値を注入します。",
+        "comment2": "Bean初期化時（@PostConstruct）、アップロードパスが存在するか確認し、なければ作成します。"
+      },
+      "fileStorage": {
+        "comment1": "メソッド全体を単一のトランザクションでラップして原子性を保証します。",
+        "comment2": "QnaDTOからQnaエンティティを作成し、データベースに保存します。",
+        "comment3": "添付された画像ファイルが存在する場合の処理ロジックを開始します。",
+        "comment4": "元のファイル名から拡張子を抽出し、UUIDを使用して一意の保存ファイル名を生成します。",
+        "comment5": "MultipartFileオブジェクトのtransferToメソッドを使用して、ファイルを指定されたパスに実際に保存します。",
+        "comment6": "保存されたファイル名に基づいてQnaImageエンティティを作成します。",
+        "comment7": "作成されたQnaImageエンティティをQnaエンティティの画像リストに追加します（JPA関連付け設定）。",
+        "comment8": "画像情報が追加されたQnaエンティティを再度保存して、変更をデータベースに反映します。",
+        "comment9": "最終的に保存されたQnaエンティティをQnaDTOに変換して返します。"
+      },
+      "fileAccess": {
+        "comment1": "特定の画像IDに対応する画像ファイルを取得するためのGETリクエストハンドラです。",
+        "comment2": "画像IDに基づいて画像リソースを取得するサービスメソッドです。",
+        "comment3": "QnaImageRepositoryを使用して画像IDでQnaImageエンティティを取得します。見つからない場合はEntityNotFoundExceptionをスローします。",
+        "comment4": "設定されたアップロードパスと画像ファイル名を組み合わせて、実際のファイルPathオブジェクトを作成します。",
+        "comment5": "ファイルパスをURIに変換し、UrlResourceオブジェクトを作成してリソースを表します。ファイルが存在し、読み取り可能であることを確認します。",
+        "getImageResource": "サービスを呼び出して画像リソースを取得",
+        "determineMimeType": "リソースのMIMEタイプを決定",
+        "returnImageResource": "画像リソースとContent-Typeヘッダーを返す",
+        "notFoundResponse": "404 レスポンス",
+        "serverErrorResponse": "500 レスポンス"
+      },
+      "frontend": {
+        "comment1": "フォーム送信イベントリスナーを登録します。",
+        "comment2": "デフォルトのフォーム送信動作（ページリフレッシュ）を防ぎます。",
+        "comment3": "ファイルを含むフォームデータを保持するためのFormDataオブジェクトを作成します。",
+        "comment4": "テキスト入力フィールドの値（タイトル、内容）をFormDataに追加します。",
+        "comment5": "ファイル入力（imageFiles）から選択されたすべてのファイルをFormDataに追加します。",
+        "comment6": "Thymeleaf変数またはJavaScript変数からCSRFトークンとヘッダー名を取得します。",
+        "comment7": "fetch APIを使用して「/qna/api/register」にPOSTリクエストを送信します。FormDataとCSRFヘッダーを含みます。",
+        "comment8": "登録成功時、返されたqnoを使用してQnA詳細表示ページにリダイレクトします。",
+        "comment9": "ファイルが選択されたときに画像プレビューを更新する関数です。",
+        "comment10": "既存のプレビュー内容をクリアします。",
+        "comment11": "各ファイルに対して、FileReaderを使用して画像データを読み取り、画面に表示するためのプレビュー要素を作成します。",
+        "comment12": "現在ログインしているユーザー情報（この例ではnull）。",
+        "successProcessing": "成功時の処理",
+        "registrationError": "登録中にエラーが発生しました"
+      },
+      "webMvcConfig": {
+         "cacheDisable": "ファビコンのキャッシュを無効化します。（開発中に変更を即座に反映するため）"
+      },
+      "dataModeling": {
+        "otherCommonFields": "作成日時と更新日時に加えて、必要に応じて削除フラグやステータスコードなどの他の共通フィールドを追加できます。",
+        "otherFields": "エンティティ間の関係や主要属性以外にも、タグ、カテゴリ、いいねなどビジネス要件に応じて必要なフィールドを追加できます。",
+        "mappedSuperclass": "JPAで継承マッピングのための親クラスとして使用されます。実際のテーブルとしては作成されず、子エンティティクラスにマッピング情報のみを提供します。",
+        "entityListeners": "エンティティのライフサイクルイベントを検出してコールバックメソッドを呼び出すリスナーを指定します。AuditingEntityListenerは作成日時と更新日時を自動的に管理します。",
+        "createdDate": "エンティティが作成されるときに現在時刻を自動的に保存するフィールドをマークします。Spring Data JPA Auditing機能を使用します。",
+        "lastModifiedDate": "エンティティが変更されるときに現在時刻に自動更新されるフィールドをマークします。Spring Data JPA Auditing機能を使用します。",
+        "entity": "このクラスがJPAエンティティであることを示し、接続されたデータベーステーブルにマッピングされます。",
+        "id": "エンティティの主キー（Primary Key）をマークします。",
+        "generatedValue": "主キー値を自動生成する戦略を指定します。デフォルト値はAUTOで、データベースに応じて適切な戦略を選択します。",
+        "manyToOne": "多対一（N:1）関係を設定します。複数のエンティティが1つのエンティティを参照する場合に使用されます。",
+        "oneToMany": "一対多（1:N）関係を設定します。1つのエンティティが複数のエンティティを参照する場合に使用されます。",
+        "mappedBy": "双方向関係において、関連の所有者ではない側から所有者を指定します。ここでは、Boardエンティティのboardフィールドが関連の所有者です。"
+      },
+      "errorController": {
+        "undefinedStatusCode": "未定義のステータスコード",
+        "notFound": "要求されたリソースが見つかりませんでした。",
+        "internalError": "サーバー内部エラーが発生しました。",
+        "defaultMessage": "デフォルトのHTTPステータスメッセージ"
+      }
+    }
+  }
+} 

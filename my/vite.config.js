@@ -4,8 +4,15 @@ import { visualizer } from 'rollup-plugin-visualizer'
 
 
 export default defineConfig({
+  optimizeDeps: {
+    include: ['styled-reset'],
+  },
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: ["babel-plugin-styled-components"]
+      }
+    }),
     visualizer({
       filename: 'stats.html',
       open: false,
@@ -13,7 +20,6 @@ export default defineConfig({
   ],
   build: {
     outDir: '/var/www/capu.it.com',
-    // outDir: './dist',
     emptyOutDir: true,
   },
 });

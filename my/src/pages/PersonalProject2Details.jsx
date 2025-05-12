@@ -12,6 +12,7 @@ import { media } from '../utils/mediaQueries';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import ClickableGif from '../components/ClickableGif';
 
 SyntaxHighlighter.registerLanguage('bash', bash);
 SyntaxHighlighter.registerLanguage('jsx', jsx);
@@ -263,24 +264,24 @@ export default function PersonalProject2Details() {
       >
         <ProjectHeader variants={itemVariants}>
           <h2>개인 프로젝트 2: 포트폴리오 웹사이트 상세 구현 과정</h2>
-          <p>React와 styled-components를 사용한 포트폴리오 웹사이트 제작 과정, 사용 기술, 디자인 결정 등을 상세히 기록합니다.</p>
+          <p>`React`와 `styled-components`를 사용한 포트폴리오 웹사이트 제작 과정, 사용 기술, 디자인 결정 등을 상세히 기록합니다.</p>
         </ProjectHeader>
 
         <ProjectSection variants={itemVariants}>
           <h3>1. 프로젝트 구조 설계</h3>
-          <p>이 포트폴리오 웹사이트를 구축하기 위해 확장성과 유지보수성을 염두에 둔 프로젝트 구조를 설계했습니다. 기능과 관심사에 따라 코드를 분리하여 명확한 구조를 갖추는 것이 목표였습니다.</p>
+          <p>이 포트폴리오 웹사이트를 구축하기 위해 확장성과 유지보수성을 염두에 둔 프로젝트 구조를 설계하였습니다. 기능과 관심사에 따라 코드를 분리하여 명확한 구조를 갖추는 것이 목표였습니다.</p>
           
           <SubSection>
             <h4>폴더 구조</h4>
-            <p>주요 폴더 구조는 다음과 같이 구성했습니다.</p>
+            <p>주요 폴더 구조는 다음과 같이 구성하였습니다.</p>
             <SyntaxHighlighter language="bash" style={vscDarkPlus}>
               {folderStructure}
             </SyntaxHighlighter>
           </SubSection>
           
           <SubSection>
-            <h4>라우팅 설계 (React Router)</h4>
-            <p>React Router를 사용하여 단일 페이지 애플리케이션(SPA)의 라우팅을 구현했습니다. 주요 페이지와 중첩 라우팅을 다음과 같이 설계했습니다.</p>
+            <h4>라우팅 설계 (`React Router`)</h4>
+            <p>`React Router`를 사용하여 단일 페이지 애플리케이션(`SPA`)의 라우팅을 구현하였습니다. 주요 페이지와 중첩 라우팅을 다음과 같이 설계하였습니다.</p>
             <SyntaxHighlighter language="jsx" style={vscDarkPlus}>
 {`// App.jsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -304,7 +305,7 @@ function App() {
           
           <SubSection>
             <h4>상태 관리</h4>
-            <p>간단한 프로젝트 특성상 대규모 상태 관리 라이브러리(Redux 등) 대신 React의 Context API를 활용해 테마 상태 등을 관리했습니다:</p>
+            <p>간단한 프로젝트 특성상 대규모 상태 관리 라이브러리(`Redux` 등) 대신 `React`의 `Context API`를 활용해 테마 상태 등을 관리하였습니다:</p>
             <SyntaxHighlighter language="jsx" style={vscDarkPlus}>
 {`// context/ThemeContext.jsx
 import { createContext, useState, useEffect } from 'react';
@@ -372,13 +373,13 @@ export const ThemeProvider = ({ children }) => {
             <h4>테마 상태 관리의 핵심 기능</h4>
             <ul>
               <li>
-                <strong>초기 상태 설정:</strong> 컴포넌트가 처음 로드될 때, useState의 초기값으로 로컬 스토리지와 시스템 설정을 확인합니다. 로컬 스토리지에 저장된 테마가 있으면 그것을 사용하고, 없으면 window.matchMedia('(prefers-color-scheme: dark)').matches를 사용하여 사용자의 운영체제(OS)나 웹 브라우저 자체의 다크 모드 설정을 확인합니다.
+                <strong>초기 상태 설정:</strong> 컴포넌트가 처음 로드될 때, `useState`의 초기값으로 로컬 스토리지와 시스템 설정을 확인합니다. 로컬 스토리지에 저장된 테마가 있으면 그것을 사용하고, 없으면 `window.matchMedia('(prefers-color-scheme: dark)').matches`를 사용하여 사용자의 운영체제(`OS`)나 웹 브라우저 자체의 다크 모드 설정을 확인합니다.
               </li>
               <li>
-                <strong>상태 변경 및 유지:</strong> 사용자가 테마 토글 버튼을 클릭하면 toggleTheme 함수가 호출되고, setIsDarkMode를 통해 isDarkMode 상태가 변경됩니다. 이 상태는 React의 useState Hook에 의해 컴포넌트의 메모리에 유지되며, 추가로 localStorage에 저장하여 페이지 새로고침이나 재방문 시에도 사용자의 설정이 유지됩니다.
+                <strong>상태 변경 및 유지:</strong> 사용자가 테마 토글 버튼을 클릭하면 `toggleTheme` 함수가 호출되고, `setIsDarkMode`를 통해 `isDarkMode` 상태가 변경됩니다. 이 상태는 `React`의 `useState Hook`에 의해 컴포넌트의 메모리에 유지되며, 추가로 `localStorage`에 저장하여 페이지 새로고침이나 재방문 시에도 사용자의 설정이 유지됩니다.
               </li>
               <li>
-                <strong>시스템 설정 변경 감지:</strong> 사용자가 브라우저나 OS의 다크 모드 설정을 변경할 경우, 이를 감지하여 사용자가 직접 테마를 선택하지 않은 경우에만 시스템 설정을 따르도록 구현했습니다. 이를 통해 사용자 경험을 향상시킵니다.
+                <strong>시스템 설정 변경 감지:</strong> 사용자가 브라우저나 `OS`의 다크 모드 설정을 변경할 경우, 이를 감지하여 사용자가 직접 테마를 선택하지 않은 경우에만 시스템 설정을 따르도록 구현하였습니다. 이를 통해 사용자 경험을 향상시킵니다.
               </li>
             </ul>
           </SubSection>
@@ -390,12 +391,12 @@ export const ThemeProvider = ({ children }) => {
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
-          <h3>2. 스타일링 시스템 (styled-components)</h3>
-          <p>모던하고 일관된 UI를 구현하기 위해 styled-components를 선택했으며, 테마 변경(다크/라이트 모드)을 쉽게 지원할 수 있는 스타일링 시스템을 구축했습니다.</p>
+          <h3>2. 스타일링 시스템 (`styled-components`)</h3>
+          <p>모던하고 일관된 `UI`를 구현하기 위해 `styled-components`를 선택하였으며, 테마 변경(다크/라이트 모드)을 쉽게 지원할 수 있는 스타일링 시스템을 구축하였습니다.</p>
           
           <SubSection>
-            <h4>GlobalStyles 설정</h4>
-            <p>전체 애플리케이션에 적용되는 기본 스타일과 CSS 변수를 정의했습니다:</p>
+            <h4>`GlobalStyles` 설정</h4>
+            <p>전체 애플리케이션에 적용되는 기본 스타일과 `CSS` 변수를 정의하였습니다:</p>
             <SyntaxHighlighter language="jsx" style={vscDarkPlus}>
 {`// styles/GlobalStyles.js
 import { createGlobalStyle } from 'styled-components';
@@ -445,7 +446,7 @@ export default GlobalStyle;`}
           
           <SubSection>
             <h4>컴포넌트 스타일링</h4>
-            <p>재사용성과 유지보수성을 고려한 컴포넌트 스타일링 접근 방식을 채택했습니다:</p>
+            <p>재사용성과 유지보수성을 고려한 컴포넌트 스타일링 접근 방식을 채택하였습니다:</p>
             <SyntaxHighlighter language="jsx" style={vscDarkPlus}>
 {`// components/ThemeToggleButton.jsx
 import styled from 'styled-components';
@@ -489,12 +490,12 @@ export default function ThemeToggleButton() {
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
-          <h3>3. 애니메이션 구현 (framer-motion)</h3>
-          <p>사용자 경험을 향상시키기 위해 Framer Motion 라이브러리를 활용하여 다양한 애니메이션 효과를 구현했습니다.</p>
+          <h3>3. 애니메이션 구현 (`framer-motion`)</h3>
+          <p>사용자 경험을 향상시키기 위해 `Framer Motion` 라이브러리를 활용하여 다양한 애니메이션 효과를 구현하였습니다.</p>
           
           <SubSection>
             <h4>페이지 전환 애니메이션</h4>
-            <p>페이지 간 부드러운 전환을 위한 애니메이션 설정을 구현했습니다.</p>
+            <p>페이지 간 부드러운 전환을 위한 애니메이션 설정을 구현하였습니다.</p>
             <SyntaxHighlighter language="javascript" style={vscDarkPlus}>
 {`// utils/animations.js
 export const pageVariants = {
@@ -545,7 +546,7 @@ export const itemVariants = {
           
           <SubSection>
             <h4>스크롤 기반 애니메이션</h4>
-            <p>사용자의 스크롤에 따라 컨텐츠가 화면에 나타나는 효과를 구현했습니다.</p>
+            <p>사용자의 스크롤에 따라 컨텐츠가 화면에 나타나는 효과를 구현하였습니다.</p>
             <SyntaxHighlighter language="jsx" style={vscDarkPlus}>
 {`// components/Section.jsx
 import { useInView } from 'react-intersection-observer';
@@ -584,18 +585,23 @@ export default function Section({ children, index = 0 }) {
           </SubSection>
           
           <ImageContainer>
-            <ProjectImage src="/images/scroll-animation.gif" alt="스크롤 기반 애니메이션 데모" />
+            <ClickableGif 
+              src="/images/scroll-animation.gif" 
+              alt="스크롤 기반 애니메이션 데모" 
+              staticSrc="/images/scroll-animation.png"
+              title="스크롤 기반 애니메이션" 
+            />
             <ImageCaption>그림 2: 스크롤에 따른 컨텐츠 등장 애니메이션</ImageCaption>
           </ImageContainer>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
           <h3>4. 반응형 디자인 구현</h3>
-          <p>모든 디바이스에서 최적의 사용자 경험을 제공하기 위해 체계적인 반응형 디자인 시스템을 구현했습니다.</p>
+          <p>모든 디바이스에서 최적의 사용자 경험을 제공하기 위해 체계적인 반응형 디자인 시스템을 구현하였습니다.</p>
           
           <SubSection>
             <h4>미디어 쿼리 시스템</h4>
-            <p>일관된 반응형 디자인을 위한 브레이크포인트 시스템을 구축했습니다:</p>
+            <p>일관된 반응형 디자인을 위한 브레이크포인트 시스템을 구축하였습니다:</p>
             <SyntaxHighlighter language="javascript" style={vscDarkPlus}>
 {`// utils/mediaQueries.js
 const breakpoints = {
@@ -649,7 +655,12 @@ export default function SkillGrid({ children }) {
           </SubSection>
           
           <ImageContainer>
-            <ProjectImage src="/images/responsive-design.gif" alt="반응형 디자인 데모" />
+            <ClickableGif 
+              src="/images/responsive-design.gif" 
+              alt="반응형 디자인 데모" 
+              staticSrc="/images/responsive-design.png"
+              title="반응형 디자인" 
+            />
             <ImageCaption>그림 3: 다양한 화면 크기에 대응하는 반응형 디자인</ImageCaption>
           </ImageContainer>
         </ProjectSection>
@@ -661,16 +672,16 @@ export default function SkillGrid({ children }) {
           <SubSection>
             <h4>빌드 청크 크기 경고 해결 과정</h4>
             <p>
-              개발 초기 npm run build 실행 시 "Some chunks are larger than 500 kB after minification" 경고가 지속적으로 발생했습니다.
+              개발 초기 `npm run build` 실행 시 "Some chunks are larger than 500 kB after minification" 경고가 지속적으로 발생하였습니다.
               이는 빌드된 자바스크립트 파일(청크) 중 일부가 커서 초기 로딩 속도에 영향을 줄 수 있음을 의미합니다.
             </p>
             <p><strong>문제 해결 단계:</strong></p>
             <ol>
               <li>
-                <strong>1차 시도 (React.lazy):</strong> React.lazy와 Suspense를 이용하여 페이지 컴포넌트들을 동적으로 로드하도록 코드를 분할했습니다. 하지만 빌드 결과, 경고는 여전히 발생했습니다.
+                <strong>1차 시도 (`React.lazy`):</strong> `React.lazy`와 `Suspense`를 이용하여 페이지 컴포넌트들을 동적으로 로드하도록 코드를 분할하였습니다. 하지만 빌드 결과, 경고는 여전히 발생하였습니다.
               </li>
               <li>
-                <strong>원인 분석 (rollup-plugin-visualizer):</strong> 정확한 원인 파악을 위해 번들 분석 도구(rollup-plugin-visualizer)를 사용하여 청크 내용을 시각화했습니다. 분석 결과, 코드 구문 강조 라이브러리인 react-syntax-highlighter가 사용하지 않는 언어 코드까지 모두 포함하여 큰 용량을 차지하는 핵심 원인임을 확인했습니다.
+                <strong>원인 분석 (`rollup-plugin-visualizer`):</strong> 정확한 원인 파악을 위해 번들 분석 도구(`rollup-plugin-visualizer`)를 사용하여 청크 내용을 시각화하였습니다. 분석 결과, 코드 구문 강조 라이브러리인 `react-syntax-highlighter`가 사용하지 않는 언어 코드까지 모두 포함하여 큰 용량을 차지하는 핵심 원인임을 확인하였습니다.
                 아래 캐러셀은 최적화 단계별 번들 분석 결과를 보여줍니다.
               </li>
             </ol>
@@ -693,10 +704,10 @@ export default function SkillGrid({ children }) {
 
             <ol start="3">
               <li>
-                <strong>2차 시도(react-syntax-highlighter 최적화):</strong> 원인 분석 결과를 바탕으로, 다음과 같이 react-syntax-highlighter 라이브러리를 최적화했습니다.
+                <strong>2차 시도(`react-syntax-highlighter` 최적화):</strong> 원인 분석 결과를 바탕으로, 다음과 같이 `react-syntax-highlighter` 라이브러리를 최적화하였습니다.
                 <ul>
-                  <li>Prism 대신 기본 언어가 포함되지 않은 가벼운 버전인 PrismLight를 임포트했습니다.</li>
-                  <li>라이브러리를 사용하는 각 파일(PersonalProject1Details.jsx 등)에서 실제로 필요한 언어(bash, jsx, javascript 등)만 개별적으로 임포트하고 SyntaxHighlighter.registerLanguage()로 등록했습니다.</li>
+                  <li>`Prism` 대신 기본 언어가 포함되지 않은 가벼운 버전인 `PrismLight`를 임포트하였습니다.</li>
+                  <li>라이브러리를 사용하는 각 파일(`PersonalProject1Details.jsx` 등)에서 실제로 필요한 언어(`bash`, `jsx`, `javascript` 등)만 개별적으로 임포트하고 `SyntaxHighlighter.registerLanguage()`로 등록하였습니다.</li>
                 </ul>
               </li>
             </ol>
@@ -716,23 +727,23 @@ SyntaxHighlighter.registerLanguage('jsx', jsx);
 // ... 컴포넌트 내에서 SyntaxHighlighter 사용 ...`}
             </SyntaxHighlighter>
             <p>
-              <strong>결과:</strong> react-syntax-highlighter 최적화를 적용한 결과, 관련 청크 크기가 크게 줄어들어 마침내 빌드 시 청크 크기 경고가 사라졌습니다. (그림 6 참고) 이 경험을 통해 번들 분석의 중요성과 라이브러리 최적화 방법을 학습할 수 있었습니다.
+              <strong>결과:</strong> `react-syntax-highlighter` 최적화를 적용한 결과, 관련 청크 크기가 크게 줄어들어 마침내 빌드 시 청크 크기 경고가 사라졌습니다. (그림 6 참고) 이 경험을 통해 번들 분석의 중요성과 라이브러리 최적화 방법을 학습할 수 있었습니다.
             </p>
           </SubSection>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
           <h3>6. 개선 사항 및 향후 계획</h3>
-          <p>포트폴리오 웹사이트를 개발하면서 얻은 인사이트와 앞으로 개선하고 싶은 부분들을 정리했습니다.</p>
+          <p>포트폴리오 웹사이트를 개발하면서 얻은 인사이트와 앞으로 개선하고 싶은 부분들을 정리하였습니다.</p>
           
           <SubSection>
             <h4>개선 사항</h4>
             <ul>
-              <li>SEO 최적화 - 메타 태그 관리 및 시맨틱 HTML 강화</li>
-              <li>접근성 개선 - ARIA 속성 추가 및 키보드 네비게이션 지원 강화</li>
+              <li>`SEO` 최적화 - 메타 태그 관리 및 시맨틱 `HTML` 강화</li>
+              <li>접근성 개선 - `ARIA` 속성 추가 및 키보드 네비게이션 지원 강화</li>
               <li>성능 최적화 - 이미지 최적화 (아직 남은 최적화 항목)</li>
               <li>애니메이션 성능 - 큰 화면에서 복잡한 애니메이션 실행 시 가끔 발생하는 성능 이슈 해결</li>
-              <li>다국어 지원 - i18n을 활용한 다국어 지원 추가</li>
+              <li>다국어 지원 - `i18n`을 활용한 다국어 지원 추가</li>
             </ul>
           </SubSection>
           
@@ -741,8 +752,8 @@ SyntaxHighlighter.registerLanguage('jsx', jsx);
             <ul>
               <li>블로그 섹션 추가 - 기술 블로그 포스팅을 포트폴리오 사이트에 통합</li>
               <li>인터랙티브 기술 데모 - 각 기술 스택에 대한 인터랙티브 데모 추가</li>
-              <li>백엔드 통합 - 간단한 백엔드 API를 추가하여 방문자 통계 및 연락처 폼 기능 구현</li>
-              <li>PWA 전환 - 오프라인 지원 및 모바일 앱과 같은 경험 제공</li>
+              <li>백엔드 통합 - 간단한 백엔드 `API`를 추가하여 방문자 통계 및 연락처 폼 기능 구현</li>
+              <li>`PWA` 전환 - 오프라인 지원 및 모바일 앱과 같은 경험 제공</li>
               <li>프로젝트 섹션 필터링 - 기술 스택 기반 프로젝트 필터링 기능 구현</li>
             </ul>
           </SubSection>
@@ -751,10 +762,10 @@ SyntaxHighlighter.registerLanguage('jsx', jsx);
         <ProjectSection variants={itemVariants}>
           <h3>7. 참고 자료 및 링크</h3>
           <ul>
-            <li><StyledLink href="https://reactjs.org" target="_blank" rel="noopener noreferrer">React 공식 문서</StyledLink></li>
-            <li><StyledLink href="https://styled-components.com" target="_blank" rel="noopener noreferrer">Styled Components 문서</StyledLink></li>
-            <li><StyledLink href="https://www.framer.com/motion/" target="_blank" rel="noopener noreferrer">Framer Motion 문서</StyledLink></li>
-            <li><StyledLink href="https://github.com/username/portfolio-website" target="_blank" rel="noopener noreferrer">프로젝트 GitHub 저장소</StyledLink></li>
+            <li><StyledLink href="https://reactjs.org" target="_blank" rel="noopener noreferrer">`React` 공식 문서</StyledLink></li>
+            <li><StyledLink href="https://styled-components.com" target="_blank" rel="noopener noreferrer">`Styled Components` 문서</StyledLink></li>
+            <li><StyledLink href="https://www.framer.com/motion/" target="_blank" rel="noopener noreferrer">`Framer Motion` 문서</StyledLink></li>
+            <li><StyledLink href="https://github.com/kapu0377/port" target="_blank" rel="noopener noreferrer">프로젝트 `GitHub` 저장소</StyledLink></li>
           </ul>
         </ProjectSection>
       </ContentWrapper>

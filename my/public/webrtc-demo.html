@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>간단 WebRTC 데모</title>
+  <style>
+    body { margin: 0; background: #222; color: #fff; }
+    video { width: 100%; max-width: 480px; border-radius: 10px; margin: 2rem auto; display: block; background: #000; }
+    h2 { text-align: center; }
+  </style>
+</head>
+<body>
+  <h2>내 카메라 미리보기(WebRTC)</h2>
+  <video id="localVideo" autoplay playsinline></video>
+  <script>
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(stream => {
+        document.getElementById('localVideo').srcObject = stream;
+      })
+      .catch(e => {
+        alert('카메라/마이크 접근 실패: ' + e.message);
+      });
+  </script>
+</body>
+</html> 
