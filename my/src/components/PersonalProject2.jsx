@@ -104,6 +104,27 @@ const FeatureList = styled.ul`
   }
 `;
 
+const LearnedPointsList = styled.ul`
+  list-style: none; 
+  padding-left: 0; 
+  margin-top: 1.5rem;
+
+  li {
+    margin-bottom: 1.5rem; 
+    line-height: 1.7; 
+    padding-left: 1rem; 
+    border-left: 3px solid var(--accent-color); 
+  }
+
+  li strong {
+    display: block;
+    font-weight: 600;
+    color: var(--primary-color); 
+    margin-bottom: 0.5rem; 
+    font-size: 1.05em; 
+  }
+`;
+
 export default function PersonalProject2() {
   return (
     <ProjectDetailContainer
@@ -126,7 +147,8 @@ export default function PersonalProject2() {
 
         <ProjectSection variants={itemVariants}>
           <h3>프로젝트 목표</h3>
-          <p>이 포트폴리오 웹사이트는 단순히 내 경력과 프로젝트를 나열하는 것을 넘어, 웹 개발에 대한 나의 열정과 역량을 직접 보여줄 수 있는 살아있는 포트폴리오를 만드는 것이 목표였습니다. 특히 다음 요소들에 중점을 두었습니다:</p>
+          <p>이 포트폴리오 웹사이트는 단순히 내 경력과 프로젝트를 나열하는 것을 넘어, 웹 개발에 대한 나의 열정과 역량을 직접 보여줄 수 있는 살아있는 포트폴리오를 만드는 것이 목표였습니다. 특히 다음 요소들에 중점을 두었습니다.</p>
+          <br />
           <FeatureList>
             <li>개발자로서 나의 기술적 역량을 시각적으로 효과적으로 전달</li>
             <li>모든 디바이스에서 최적의 사용자 경험을 제공하는 반응형 디자인</li>
@@ -164,9 +186,20 @@ export default function PersonalProject2() {
 
         <ProjectSection variants={itemVariants}>
           <h3>구현 과정 및 배운 점</h3>
-          <p>이 프로젝트를 통해 React 환경에서 컴포넌트 구조를 효율적으로 설계하는 방법과 styled-components를 활용한 테마 관리 시스템을 깊이 이해할 수 있었습니다. 특히 다크 모드 구현 과정에서 전역 테마 상태 관리와 CSS 변수를 활용한 동적 스타일링 기법을 학습했습니다.</p>
-          <p>또한 Framer Motion을 사용한 애니메이션 구현 과정에서 사용자 경험을 해치지 않으면서도 시각적으로 매력적인 인터페이스를 구성하는 균형점을 찾는 것이 중요함을 깨달았습니다. 반응형 디자인 구현에서는 다양한 기기에서 일관된 사용자 경험을 제공하기 위한 레이아웃 설계 방법을 습득했습니다.</p>
-          <p>마지막으로, React Router를 활용한 SPA 라우팅 구현 과정에서 효율적인 코드 분할(code splitting)과 지연 로딩(lazy loading) 기법을 적용하여 초기 로딩 시간을 최적화하는 방법을 배웠습니다.</p>
+          <LearnedPointsList>
+            <li>
+              <strong>컴포넌트 설계 및 테마 관리:</strong> React 환경에서의 효율적인 컴포넌트 구조 설계 및 styled-components를 활용한 테마 관리 시스템(다크 모드 포함) 구현 방법을 깊이 이해했습니다.
+            </li>
+            <li>
+              <strong>애니메이션과 사용자 경험 균형:</strong> Framer Motion을 사용하며 시각적 매력과 사용자 경험을 해치지 않는 애니메이션 구현의 중요성을 깨달았습니다.
+            </li>
+            <li>
+              <strong>반응형 디자인 설계:</strong> 다양한 기기에서 일관된 사용자 경험을 제공하기 위한 효과적인 레이아웃 설계 및 CSS 미디어 쿼리 활용법을 습득했습니다.
+            </li>
+            <li>
+              <strong>SPA 라우팅 및 성능 최적화:</strong> React Router를 활용한 SPA 라우팅 구현 및 코드 분할(code splitting), 지연 로딩(lazy loading)을 통한 초기 로딩 시간 최적화 방법을 학습했습니다.
+            </li>
+          </LearnedPointsList>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>

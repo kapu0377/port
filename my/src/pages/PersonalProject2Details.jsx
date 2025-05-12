@@ -3,9 +3,19 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { pageVariants, pageTransition, containerVariants, itemVariants } from '../utils/animations';
 import { Link } from 'react-router-dom';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
+import javascript from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
 import { media } from '../utils/mediaQueries';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('jsx', jsx);
+SyntaxHighlighter.registerLanguage('javascript', javascript);
 
 const ProjectDetailContainer = styled(motion.div)`
   padding: 4rem 1rem;
@@ -118,6 +128,30 @@ const ProjectImage = styled.img`
   width: 100%;
   display: block;
   margin-bottom: 0.5rem;
+  max-height: 800px;
+  object-fit: contain;
+  
+  &[src$=".gif"] {
+    max-height: 400px;
+    object-fit: cover;
+    margin: 0 auto;
+  }
+  
+  ${media.tablet} {
+    max-height: 400px;
+    
+    &[src$=".gif"] {
+      max-height: 350px;
+    }
+  }
+  
+  ${media.mobile} {
+    max-height: 300px;
+    
+    &[src$=".gif"] {
+      max-height: 250px;
+    }
+  }
 `;
 
 const ImageCaption = styled.p`
@@ -173,7 +207,47 @@ const folderStructure =
 ├── App.jsx          # 애플리케이션 엔트리 포인트
 └── main.jsx         # React 렌더링 설정`;
 
+// 캐러셀 스타일 정의
+const StyledSlider = styled(Slider)`
+  margin: 2rem 0;
+
+  .slick-slide img {
+    display: block;
+    margin: 0 auto;
+    max-height: 400px;
+    object-fit: contain;
+  }
+
+  .slick-dots li button:before {
+    color: var(--primary-color);
+    font-size: 10px;
+  }
+
+  .slick-dots li.slick-active button:before {
+    color: var(--accent-color);
+    opacity: 1;
+  }
+  
+  .slick-slide > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+const CarouselImageCaption = styled(ImageCaption)`
+  margin-top: 0.8rem;
+`;
+
 export default function PersonalProject2Details() {
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
   return (
     <ProjectDetailContainer
       initial="initial"
@@ -198,7 +272,7 @@ export default function PersonalProject2Details() {
           
           <SubSection>
             <h4>폴더 구조</h4>
-            <p>주요 폴더 구조는 다음과 같이 구성했습니다:</p>
+            <p>주요 폴더 구조는 다음과 같이 구성했습니다.</p>
             <SyntaxHighlighter language="bash" style={vscDarkPlus}>
               {folderStructure}
             </SyntaxHighlighter>
@@ -238,21 +312,51 @@ import { createContext, useState, useEffect } from 'react';
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  );
+  // 초기값 설정: 
+  // 1. 로컬 스토리지에 저장된 테마 설정을 먼저 확인
+  // 2. 저장된 설정이 없으면 시스템의 다크 모드 설정을 확인
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // 로컬 스토리지에 저장된 테마가 있는지 확인
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme !== null) {
+      return savedTheme === 'dark';
+    }
+    
+    // 저장된 테마가 없으면 시스템 설정 확인
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
   
+  // 테마 변경 시 로컬 스토리지에 저장하고 body 속성 업데이트
   useEffect(() => {
+    // body 태그의 data-theme 속성을 변경하여 CSS 변수 적용
     const body = document.body;
     if (isDarkMode) {
       body.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
     } else {
       body.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
+  
+  // 시스템 테마 변경 감지 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    // 사용자가 직접 테마를 설정하지 않은 경우에만 시스템 설정 변경을 적용
+    const handleSystemThemeChange = (e) => {
+      // 로컬 스토리지에 사용자 설정이 없는 경우에만 시스템 설정 적용
+      if (localStorage.getItem('theme') === null) {
+        setIsDarkMode(e.matches);
+      }
+    };
+    
+    mediaQuery.addEventListener('change', handleSystemThemeChange);
+    return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
+  }, []);
 
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+    setIsDarkMode(prevMode => !prevMode);
   };
 
   return (
@@ -263,6 +367,26 @@ export const ThemeProvider = ({ children }) => {
 };`}
             </SyntaxHighlighter>
           </SubSection>
+          
+          <SubSection>
+            <h4>테마 상태 관리의 핵심 기능</h4>
+            <ul>
+              <li>
+                <strong>초기 상태 설정:</strong> 컴포넌트가 처음 로드될 때, useState의 초기값으로 로컬 스토리지와 시스템 설정을 확인합니다. 로컬 스토리지에 저장된 테마가 있으면 그것을 사용하고, 없으면 window.matchMedia('(prefers-color-scheme: dark)').matches를 사용하여 사용자의 운영체제(OS)나 웹 브라우저 자체의 다크 모드 설정을 확인합니다.
+              </li>
+              <li>
+                <strong>상태 변경 및 유지:</strong> 사용자가 테마 토글 버튼을 클릭하면 toggleTheme 함수가 호출되고, setIsDarkMode를 통해 isDarkMode 상태가 변경됩니다. 이 상태는 React의 useState Hook에 의해 컴포넌트의 메모리에 유지되며, 추가로 localStorage에 저장하여 페이지 새로고침이나 재방문 시에도 사용자의 설정이 유지됩니다.
+              </li>
+              <li>
+                <strong>시스템 설정 변경 감지:</strong> 사용자가 브라우저나 OS의 다크 모드 설정을 변경할 경우, 이를 감지하여 사용자가 직접 테마를 선택하지 않은 경우에만 시스템 설정을 따르도록 구현했습니다. 이를 통해 사용자 경험을 향상시킵니다.
+              </li>
+            </ul>
+          </SubSection>
+          
+          <ImageContainer>
+            <ProjectImage src="/images/theme-toggle-demo.gif" alt="다크 모드와 라이트 모드 전환 데모" />
+            <ImageCaption>그림 1: 포트폴리오 웹사이트의 다크 모드와 라이트 모드 전환</ImageCaption>
+          </ImageContainer>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
@@ -362,11 +486,6 @@ export default function ThemeToggleButton() {
 }`}
             </SyntaxHighlighter>
           </SubSection>
-          
-          <ImageContainer>
-            <ProjectImage src="/images/theme-toggle-demo.png" alt="다크 모드와 라이트 모드 전환 데모" />
-            <ImageCaption>그림 1: 포트폴리오 웹사이트의 다크 모드와 라이트 모드 전환</ImageCaption>
-          </ImageContainer>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
@@ -375,7 +494,7 @@ export default function ThemeToggleButton() {
           
           <SubSection>
             <h4>페이지 전환 애니메이션</h4>
-            <p>페이지 간 부드러운 전환을 위한 애니메이션 설정을 구현했습니다:</p>
+            <p>페이지 간 부드러운 전환을 위한 애니메이션 설정을 구현했습니다.</p>
             <SyntaxHighlighter language="javascript" style={vscDarkPlus}>
 {`// utils/animations.js
 export const pageVariants = {
@@ -426,7 +545,7 @@ export const itemVariants = {
           
           <SubSection>
             <h4>스크롤 기반 애니메이션</h4>
-            <p>사용자의 스크롤에 따라 컨텐츠가 화면에 나타나는 효과를 구현했습니다:</p>
+            <p>사용자의 스크롤에 따라 컨텐츠가 화면에 나타나는 효과를 구현했습니다.</p>
             <SyntaxHighlighter language="jsx" style={vscDarkPlus}>
 {`// components/Section.jsx
 import { useInView } from 'react-intersection-observer';
@@ -465,7 +584,7 @@ export default function Section({ children, index = 0 }) {
           </SubSection>
           
           <ImageContainer>
-            <ProjectImage src="/images/scroll-animation.png" alt="스크롤 기반 애니메이션 데모" />
+            <ProjectImage src="/images/scroll-animation.gif" alt="스크롤 기반 애니메이션 데모" />
             <ImageCaption>그림 2: 스크롤에 따른 컨텐츠 등장 애니메이션</ImageCaption>
           </ImageContainer>
         </ProjectSection>
@@ -530,13 +649,80 @@ export default function SkillGrid({ children }) {
           </SubSection>
           
           <ImageContainer>
-            <ProjectImage src="/images/responsive-design.png" alt="반응형 디자인 데모" />
+            <ProjectImage src="/images/responsive-design.gif" alt="반응형 디자인 데모" />
             <ImageCaption>그림 3: 다양한 화면 크기에 대응하는 반응형 디자인</ImageCaption>
           </ImageContainer>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
-          <h3>5. 개선 사항 및 향후 계획</h3>
+          <h3>5. 성능 최적화 및 문제 해결</h3>
+          <p>웹사이트 개발 과정에서 마주친 성능 관련 문제와 이를 해결하기 위해 적용했던 최적화 과정입니다.</p>
+          
+          <SubSection>
+            <h4>빌드 청크 크기 경고 해결 과정</h4>
+            <p>
+              개발 초기 npm run build 실행 시 "Some chunks are larger than 500 kB after minification" 경고가 지속적으로 발생했습니다.
+              이는 빌드된 자바스크립트 파일(청크) 중 일부가 커서 초기 로딩 속도에 영향을 줄 수 있음을 의미합니다.
+            </p>
+            <p><strong>문제 해결 단계:</strong></p>
+            <ol>
+              <li>
+                <strong>1차 시도 (React.lazy):</strong> React.lazy와 Suspense를 이용하여 페이지 컴포넌트들을 동적으로 로드하도록 코드를 분할했습니다. 하지만 빌드 결과, 경고는 여전히 발생했습니다.
+              </li>
+              <li>
+                <strong>원인 분석 (rollup-plugin-visualizer):</strong> 정확한 원인 파악을 위해 번들 분석 도구(rollup-plugin-visualizer)를 사용하여 청크 내용을 시각화했습니다. 분석 결과, 코드 구문 강조 라이브러리인 react-syntax-highlighter가 사용하지 않는 언어 코드까지 모두 포함하여 큰 용량을 차지하는 핵심 원인임을 확인했습니다.
+                아래 캐러셀은 최적화 단계별 번들 분석 결과를 보여줍니다.
+              </li>
+            </ol>
+
+            {/* 캐러셀 위치 조정 */}
+            <StyledSlider {...sliderSettings}>
+              <div>
+                <ProjectImage src="/images/first.png" alt="최적화 전 번들 분석 결과" />
+                <CarouselImageCaption>그림 4: 최적화 전 번들 분석 결과(초기 상태)</CarouselImageCaption>
+              </div>
+              <div>
+                <ProjectImage src="/images/second.png" alt="1차 최적화 후 (React.lazy 적용)" />
+                <CarouselImageCaption>그림 5: 1차 최적화(React.lazy)후(여전히 syntax highlighter 문제 보임)</CarouselImageCaption>
+              </div>
+              <div>
+                <ProjectImage src="/images/final.png" alt="최종 최적화 후 번들 분석 결과" />
+                <CarouselImageCaption>그림 6: 최종 최적화(syntax highlighter) 후 (경고 해소)</CarouselImageCaption>
+              </div>
+            </StyledSlider>
+
+            <ol start="3">
+              <li>
+                <strong>2차 시도(react-syntax-highlighter 최적화):</strong> 원인 분석 결과를 바탕으로, 다음과 같이 react-syntax-highlighter 라이브러리를 최적화했습니다.
+                <ul>
+                  <li>Prism 대신 기본 언어가 포함되지 않은 가벼운 버전인 PrismLight를 임포트했습니다.</li>
+                  <li>라이브러리를 사용하는 각 파일(PersonalProject1Details.jsx 등)에서 실제로 필요한 언어(bash, jsx, javascript 등)만 개별적으로 임포트하고 SyntaxHighlighter.registerLanguage()로 등록했습니다.</li>
+                </ul>
+              </li>
+            </ol>
+            <SyntaxHighlighter language="jsx" style={vscDarkPlus}>
+{`// 예시: PersonalProject2Details.jsx
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+// ... 필요한 언어 import ...
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
+// ...
+
+// 필요한 언어만 등록
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('jsx', jsx);
+// ...
+
+// ... 컴포넌트 내에서 SyntaxHighlighter 사용 ...`}
+            </SyntaxHighlighter>
+            <p>
+              <strong>결과:</strong> react-syntax-highlighter 최적화를 적용한 결과, 관련 청크 크기가 크게 줄어들어 마침내 빌드 시 청크 크기 경고가 사라졌습니다. (그림 6 참고) 이 경험을 통해 번들 분석의 중요성과 라이브러리 최적화 방법을 학습할 수 있었습니다.
+            </p>
+          </SubSection>
+        </ProjectSection>
+
+        <ProjectSection variants={itemVariants}>
+          <h3>6. 개선 사항 및 향후 계획</h3>
           <p>포트폴리오 웹사이트를 개발하면서 얻은 인사이트와 앞으로 개선하고 싶은 부분들을 정리했습니다.</p>
           
           <SubSection>
@@ -544,7 +730,7 @@ export default function SkillGrid({ children }) {
             <ul>
               <li>SEO 최적화 - 메타 태그 관리 및 시맨틱 HTML 강화</li>
               <li>접근성 개선 - ARIA 속성 추가 및 키보드 네비게이션 지원 강화</li>
-              <li>성능 최적화 - 이미지 최적화 및 코드 스플리팅 적용</li>
+              <li>성능 최적화 - 이미지 최적화 (아직 남은 최적화 항목)</li>
               <li>애니메이션 성능 - 큰 화면에서 복잡한 애니메이션 실행 시 가끔 발생하는 성능 이슈 해결</li>
               <li>다국어 지원 - i18n을 활용한 다국어 지원 추가</li>
             </ul>
@@ -563,19 +749,14 @@ export default function SkillGrid({ children }) {
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
-          <h3>6. 참고 자료 및 링크</h3>
+          <h3>7. 참고 자료 및 링크</h3>
           <ul>
             <li><StyledLink href="https://reactjs.org" target="_blank" rel="noopener noreferrer">React 공식 문서</StyledLink></li>
             <li><StyledLink href="https://styled-components.com" target="_blank" rel="noopener noreferrer">Styled Components 문서</StyledLink></li>
             <li><StyledLink href="https://www.framer.com/motion/" target="_blank" rel="noopener noreferrer">Framer Motion 문서</StyledLink></li>
             <li><StyledLink href="https://github.com/username/portfolio-website" target="_blank" rel="noopener noreferrer">프로젝트 GitHub 저장소</StyledLink></li>
           </ul>
-          
-          <p style={{ marginTop: '2rem' }}>
-            <StyledInternalLink to="/projects/personal-2">돌아가기: 포트폴리오 웹사이트 개요</StyledInternalLink>
-          </p>
         </ProjectSection>
-
       </ContentWrapper>
     </ProjectDetailContainer>
   );

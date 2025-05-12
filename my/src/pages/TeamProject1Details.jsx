@@ -3,9 +3,14 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { pageVariants, pageTransition, containerVariants, itemVariants } from '../utils/animations';
 import { Link } from 'react-router-dom';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
+import java from 'react-syntax-highlighter/dist/esm/languages/prism/java';
 import { media } from '../utils/mediaQueries';
+
+SyntaxHighlighter.registerLanguage('jsx', jsx);
+SyntaxHighlighter.registerLanguage('java', java);
 
 const ProjectDetailContainer = styled(motion.div)`
   padding: 4rem 1rem;
@@ -103,6 +108,57 @@ const StyledInternalLink = styled(Link)`
   &:hover { opacity: 0.8; }
 `;
 
+const ImageContainer = styled.div`
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  
+  ${media.mobile} {
+    margin: 1rem 0;
+  }
+`;
+
+const ProjectImage = styled.img`
+  width: 100%;
+  display: block;
+  margin-bottom: 0.5rem;
+  max-height: 500px;
+  object-fit: contain;
+  
+  &[src$=".gif"] {
+    max-height: 400px;
+    object-fit: cover;
+    margin: 0 auto;
+  }
+  
+  ${media.tablet} {
+    max-height: 400px;
+    
+    &[src$=".gif"] {
+      max-height: 350px;
+    }
+  }
+  
+  ${media.mobile} {
+    max-height: 300px;
+    
+    &[src$=".gif"] {
+      max-height: 250px;
+    }
+  }
+`;
+
+const ImageCaption = styled.p`
+  font-size: 0.9rem;
+  color: var(--secondary-text-color);
+  text-align: center;
+  margin-top: 0.5rem;
+  
+  ${media.mobile} {
+    font-size: 0.8rem;
+  }
+`;
 
 export default function TeamProject1Details() {
   return (
@@ -126,7 +182,10 @@ export default function TeamProject1Details() {
         <ProjectSection variants={itemVariants}>
           <h3>프로젝트 아키텍처</h3>
           <p>[시스템 구성도, 기술 스택 선정 이유 등 설명]</p>
-          {/* <img src="/path/to/architecture1.png" alt="프로젝트 1 아키텍처" style={{ maxWidth: '100%', height: 'auto' }} /> */}
+          {/* <ImageContainer>
+            <ProjectImage src="/path/to/architecture1.png" alt="프로젝트 1 아키텍처" />
+            <ImageCaption>프로젝트 아키텍처 및 기술 스택 구성도</ImageCaption>
+          </ImageContainer> */}
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
@@ -136,9 +195,17 @@ export default function TeamProject1Details() {
 
           <h4>작동 순서 및 화면</h4>
           <p>1. 사용자가 가입 폼에 정보를 입력합니다.</p>
-          <img src="/images/signup-step1.png" alt="회원가입 1단계" style={{ maxWidth: '80%', marginBottom: '1rem' }} />
+          <ImageContainer>
+            <ProjectImage src="/images/signup-step1.png" alt="회원가입 1단계" />
+            <ImageCaption>회원가입 1단계: 사용자 정보 입력 화면</ImageCaption>
+          </ImageContainer>
+          
           <p>2. '가입하기' 버튼을 누르면 유효성 검사를 거칩니다.</p>
-          <img src="/images/signup-step2.png" alt="회원가입 2단계" style={{ maxWidth: '80%', marginBottom: '1rem' }}/>
+          <ImageContainer>
+            <ProjectImage src="/images/signup-step2.png" alt="회원가입 2단계" />
+            <ImageCaption>회원가입 2단계: 유효성 검사 및 완료 화면</ImageCaption>
+          </ImageContainer>
+          
           {/* 만약 스크린샷이 더 많다면 캐러셀 등으로 묶기 */}
 
           <h4>주요 구현 코드 (React & Spring Boot)</h4>

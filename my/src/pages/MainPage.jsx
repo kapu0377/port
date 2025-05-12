@@ -97,8 +97,7 @@ export default function MainPage() {
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
+        viewport={{ once: true, amount: 0.2 }}>
         <Section $isActive={activeSection === 'about'}>
           <About/>
         </Section>

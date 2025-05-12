@@ -2,20 +2,23 @@ import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 're
 import styled from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import GlobalStyle from './styles/GlobalStyles';
-import MainPage from './pages/MainPage';
-import SkillsPage from './pages/SkillsPage';
-import ProjectsPage from './pages/ProjectsPage';
-import PersonalProject1 from './components/PersonalProject1';
-import PersonalProject2 from './components/PersonalProject2';
-import TeamProject1 from './components/TeamProject1';
-import TeamProject2 from './components/TeamProject2';
-import TeamProject1Details from './pages/TeamProject1Details';
-import TeamProject2Details from './pages/TeamProject2Details';
-import PersonalProject1Details from './pages/PersonalProject1Details';
-import PersonalProject2Details from './pages/PersonalProject2Details';
-import { useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext.jsx';
 import ThemeToggleButton from './components/ThemeToggleButton';
+import { useEffect, lazy, Suspense } from 'react';
+
+const MainPage = lazy(() => import('./pages/MainPage'));
+const SkillsPage = lazy(() => import('./pages/SkillsPage'));
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
+const PersonalProject1Details = lazy(() => import('./pages/PersonalProject1Details'));
+const PersonalProject2Details = lazy(() => import('./pages/PersonalProject2Details'));
+const TeamProject1Details = lazy(() => import('./pages/TeamProject1Details'));
+const TeamProject2Details = lazy(() => import('./pages/TeamProject2Details'));
+
+
+const PersonalProject1 = lazy(() => import('./components/PersonalProject1'));
+const PersonalProject2 = lazy(() => import('./components/PersonalProject2'));
+const TeamProject1 = lazy(() => import('./components/TeamProject1'));
+const TeamProject2 = lazy(() => import('./components/TeamProject2'));
 
 const Header = styled.header`
   padding: 1rem 2rem;
@@ -72,6 +75,15 @@ const StyledRouterLink = styled(NavLink)`
   }
 `;
 
+const LoadingSpinner = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+`;
+
 function AppContent() {
   const location = useLocation();
   useEffect(() => {
@@ -104,19 +116,21 @@ function AppContent() {
         </HeaderContent>
       </Header>
       <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<MainPage/>} />
-          <Route path="/skills" element={<SkillsPage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/projects/personal-1" element={<PersonalProject1 />} />
-          <Route path="/projects/personal-1/details" element={<PersonalProject1Details />} />
-          <Route path="/projects/personal-2" element={<PersonalProject2 />} />
-          <Route path="/projects/personal-2/details" element={<PersonalProject2Details />} />
-          <Route path="/projects/team-1" element={<TeamProject1 />} />
-          <Route path="/projects/team-1/details" element={<TeamProject1Details />} />
-          <Route path="/projects/team-2" element={<TeamProject2 />} />
-          <Route path="/projects/team-2/details" element={<TeamProject2Details />} />
-        </Routes>
+        <Suspense fallback={<LoadingSpinner>로딩 중...</LoadingSpinner>}>
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<MainPage/>} />
+            <Route path="/skills" element={<SkillsPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/personal-1" element={<PersonalProject1 />} />
+            <Route path="/projects/personal-1/details" element={<PersonalProject1Details />} />
+            <Route path="/projects/personal-2" element={<PersonalProject2 />} />
+            <Route path="/projects/personal-2/details" element={<PersonalProject2Details />} />
+            <Route path="/projects/team-1" element={<TeamProject1 />} />
+            <Route path="/projects/team-1/details" element={<TeamProject1Details />} />
+            <Route path="/projects/team-2" element={<TeamProject2 />} />
+            <Route path="/projects/team-2/details" element={<TeamProject2Details />} />
+          </Routes>
+        </Suspense>
       </AnimatePresence>
     </>
   );
