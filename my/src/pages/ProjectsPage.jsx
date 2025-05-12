@@ -106,23 +106,23 @@ export default function Projects() {
       exit="exit"
     >
       <h2>
-        Projects List
+        🚀 나의 프로젝트 여정
       </h2>
 
       <TableOfContents>
-        <h3></h3>
+        <h3>프로젝트 목차</h3>
         <ul>
           <li>
-            <StyledLink to="/projects/personal-1">개인 프로젝트 1: 개인 서버 구축 및 호스팅</StyledLink>
+            <StyledLink to="/projects/personal-1">개인 프로젝트 1: 클라우드 기반 개인 서버 구축 & 호스팅 솔루션</StyledLink>
           </li>
           <li>
-            <StyledLink to="/projects/personal-2">개인 프로젝트 2: 포트폴리오 웹사이트</StyledLink>
+            <StyledLink to="/projects/personal-2">개인 프로젝트 2: 인터랙티브 포트폴리오 웹사이트 개발</StyledLink>
           </li>
           <li>
-            <StyledLink to="/projects/team-1">팀 프로젝트 1: Spring Boot + React 웹사이트</StyledLink>
+            <StyledLink to="/projects/team-1">팀 프로젝트 1: EZPZ - 쉽고 안전한 여행을 위한 항공 플랫폼</StyledLink>
           </li>
           <li>
-            <StyledLink to="/projects/team-2">팀 프로젝트 2: Spring Boot 기반 웹 서비스</StyledLink>
+            <StyledLink to="/projects/team-2">팀 프로젝트 2: work out - 함께 운동하며 건강한 라이프스타일을 공유하는 플랫폼</StyledLink>
           </li>
         </ul>
       </TableOfContents>

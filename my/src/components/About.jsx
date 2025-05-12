@@ -166,7 +166,7 @@ export default function About() {
           animate="visible"
         >
           <Subtitle variants={itemVariants}>나날이 발전하는 개발자</Subtitle>
-          <Name variants={itemVariants}>xxx</Name>
+          <Name variants={itemVariants}>XXX</Name>
         </NameContainer>
         <ContactInfo
           variants={containerVariants}
@@ -175,7 +175,7 @@ export default function About() {
         >
           <motion.p variants={itemVariants}><FaPhone /> +82 010-4469-0348</motion.p>
           <motion.p variants={itemVariants}><FaEnvelope /> pjoonwoo9999@gmail.com</motion.p>
-          <motion.p variants={itemVariants}><FaGithub /> <a href="https://github.com/미정" target="_blank" rel="noopener noreferrer">github.com/미정</a></motion.p>
+          <motion.p variants={itemVariants}><FaGithub /> <a href="https://github.com" target="_blank" rel="noopener noreferrer">github.com/kapu0377</a></motion.p>
         </ContactInfo>
       </AboutContainer>
     </motion.div>

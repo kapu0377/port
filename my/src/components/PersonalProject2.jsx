@@ -142,70 +142,71 @@ export default function PersonalProject2() {
       >
         <ProjectHeader variants={itemVariants}>
           <h2>개인 프로젝트 2: 포트폴리오 웹사이트</h2>
-          <p>React와 styled-components를 사용하여 제작한 개인 포트폴리오 웹사이트입니다. 자기소개, 기술 스택, 프로젝트 경험 등을 인터랙티브하게 보여주는 것을 목표로 합니다.</p>
+          <p>처음에는 단순히 내 이력과 프로젝트를 정리하려고 시작했지만, 만들다 보니 "나만의 색깔"을 담고 싶다는 욕심이 생겼습니다. `React`와 `styled-components`를 활용해, 저를 좀 더 솔직하게 보여줄 수 있는 포트폴리오 웹사이트를 직접 만들어봤습니다.</p>
         </ProjectHeader>
 
         <ProjectSection variants={itemVariants}>
           <h3>프로젝트 목표</h3>
-          <p>이 포트폴리오 웹사이트는 단순히 내 경력과 프로젝트를 나열하는 것을 넘어, 웹 개발에 대한 나의 열정과 역량을 직접 보여줄 수 있는 살아있는 포트폴리오를 만드는 것이 목표였습니다. 특히 다음 요소들에 중점을 두었습니다.</p>
+          <p>이 웹사이트는 단순히 경력이나 프로젝트를 나열하는 공간이 아니라, 실제로 제가 어떤 고민을 했고, 어떤 기술을 써봤으며, 어떤 시행착오를 겪었는지까지 담고 싶었습니다. "살아있는 포트폴리오"를 만들고 싶다는 생각이 컸고, 그래서 디자인, 기능, 구조 하나하나에 신경을 많이 썼습니다.</p>
           <br />
           <FeatureList>
-            <li>개발자로서 나의 기술적 역량을 시각적으로 효과적으로 전달</li>
-            <li>모든 디바이스에서 최적의 사용자 경험을 제공하는 반응형 디자인</li>
-            <li>직관적인 네비게이션과 인터랙티브한 UI 요소로 사용자 참여 유도</li>
-            <li>다크 모드와 라이트 모드를 지원하여 사용자 선호도 반영</li>
-            <li>페이지 전환 애니메이션과 인터랙션으로 세련된 사용자 경험 제공</li>
-            <li>프로젝트 상세 내용을 명확하고 체계적으로 전달</li>
+            <li>딱딱한 이력서 느낌이 아니라, 저라는 사람을 자연스럽게 보여주고 싶었습니다.</li>
+            <li>모바일, 태블릿, PC 등 어떤 환경에서도 보기 편하도록 반응형 디자인에 신경 썼습니다.</li>
+            <li>처음 방문한 사람도 쉽게 탐색할 수 있도록 네비게이션과 `UI`를 단순하게 구성하였습니다.</li>
+            <li>다크 모드/라이트 모드 전환은 요즘 필수라 생각해서 꼭 넣었습니다.</li>
+            <li>페이지 전환이나 버튼 클릭 등, 작은 부분에도 부드러운 애니메이션을 더해 사용감이 답답하지 않도록 하였습니다.</li>
+            <li>프로젝트별로 상세 내용을 쉽게 볼 수 있도록 구조를 설계하였습니다.</li>
           </FeatureList>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
           <h3>주요 기능</h3>
           <FeatureList>
-            <li><strong>자기소개 섹션</strong> - 개발자로서의 정체성, 핵심 역량, 연락처 정보 제공</li>
-            <li><strong>기술 스택 상세 소개</strong> - 프론트엔드, 백엔드, 도구 등 분야별 기술 역량 시각화</li>
-            <li><strong>프로젝트 갤러리</strong> - 개인 및 팀 프로젝트 목록과 상세 페이지 구현</li>
-            <li><strong>반응형 디자인</strong> - 모바일, 태블릿, 데스크탑 등 모든 화면 크기에 최적화</li>
-            <li><strong>다크 모드 지원</strong> - 사용자 선호도와 시스템 설정에 따른 테마 전환 기능</li>
-            <li><strong>애니메이션 효과</strong> - 페이지 전환, 스크롤 기반 요소 등장, 상호작용 애니메이션</li>
+            <li><strong>자기소개 섹션</strong> - 단순한 소개가 아니라, 저의 개발자로서의 고민과 방향성을 담으려고 하였습니다.</li>
+            <li><strong>기술 스택 상세 소개</strong> - 단순히 기술을 나열하는 게 아니라, 실제로 써보며 느낀 점을 함께 정리하였습니다.</li>
+            <li><strong>프로젝트 갤러리</strong> - 개인/팀 프로젝트를 한눈에 볼 수 있게 하고, 각 프로젝트의 상세 내용도 쉽게 확인할 수 있도록 하였습니다.</li>
+            <li><strong>반응형 디자인</strong> - 직접 여러 기기에서 테스트하며, 화면이 깨지지 않도록 꼼꼼히 조정하였습니다.</li>
+            <li><strong>다크 모드 지원</strong> - 시스템 설정과 연동되도록 구현해서, 사용자가 별도로 설정하지 않아도 자연스럽게 적용됩니다.</li>
+            <li><strong>애니메이션 효과</strong> - 너무 과하지 않으면서도, 사용자가 "살아있는 사이트"라는 느낌을 받을 수 있도록 신경 썼습니다.</li>
           </FeatureList>
         </ProjectSection>
-
         <ProjectSection variants={itemVariants}>
           <h3>기술 스택</h3>
           <TechStackList>
-            <li><strong>프레임워크:</strong> React - 컴포넌트 기반 UI 구성 및 상태 관리</li>
-            <li><strong>스타일링:</strong> styled-components - 컴포넌트 중심 CSS-in-JS 적용</li>
-            <li><strong>라우팅:</strong> React Router - SPA 내비게이션 및 라우팅 관리</li>
-            <li><strong>애니메이션:</strong> Framer Motion - 부드러운 UI 애니메이션 구현</li>
-            <li><strong>언어:</strong> JavaScript (ES6+) - 모던 자바스크립트 문법 활용</li>
-            <li><strong>마크업:</strong> HTML5, Semantic HTML - 접근성 및 SEO 최적화</li>
-            <li><strong>빌드 도구:</strong> Vite - 빠른 개발 서버 및 최적화된 빌드 제공</li>
+            <li><strong>프레임워크:</strong> `React` - 컴포넌트 구조가 명확해서 유지보수가 편했고, 상태 관리도 간단한 편이었습니다.</li>
+            <li><strong>스타일링:</strong> `styled-components` - `CSS-in-JS` 방식이 처음엔 낯설었지만, 테마 관리나 컴포넌트별 스타일 분리에 정말 유용하였습니다.</li>
+            <li><strong>라우팅:</strong> `React Router` - `SPA` 구조에서 페이지 이동을 자연스럽게 처리할 수 있어 필수였습니다.</li>
+            <li><strong>애니메이션:</strong> `Framer Motion` - 진입 장벽이 낮으면서도, 꽤 다양한 애니메이션을 쉽게 구현할 수 있었습니다.</li>
+            <li><strong>언어:</strong> `JavaScript` (`ES6+`) - 최신 문법을 적극적으로 활용해 코드가 훨씬 깔끔해졌습니다.</li>
+            <li><strong>마크업:</strong> `HTML5`, `Semantic HTML` - 접근성과 `SEO`를 고려해 태그 하나하나 신경 썼습니다.</li>
+            <li><strong>빌드 도구:</strong> `Vite` - `CRA`보다 훨씬 빠르고, 번들 최적화도 잘 되어 있어 개발이 쾌적하였습니다.</li>
           </TechStackList>
         </ProjectSection>
-
         <ProjectSection variants={itemVariants}>
           <h3>구현 과정 및 배운 점</h3>
           <LearnedPointsList>
             <li>
-              <strong>컴포넌트 설계 및 테마 관리:</strong> React 환경에서의 효율적인 컴포넌트 구조 설계 및 styled-components를 활용한 테마 관리 시스템(다크 모드 포함) 구현 방법을 깊이 이해했습니다.
+              <strong>컴포넌트 설계와 테마 관리의 시행착오</strong>
+              처음에는 `styled-components`의 테마 기능을 어떻게 활용해야 할지 몰라서, 여기저기서 변수 충돌이 많이 났습니다. 시행착오 끝에 전역 스타일과 컴포넌트별 스타일을 분리하는 방법을 익혔고, 다크 모드도 자연스럽게 적용할 수 있었습니다.
             </li>
             <li>
-              <strong>애니메이션과 사용자 경험 균형:</strong> Framer Motion을 사용하며 시각적 매력과 사용자 경험을 해치지 않는 애니메이션 구현의 중요성을 깨달았습니다.
+              <strong>애니메이션과 사용자 경험의 균형</strong>
+              `Framer Motion`을 처음 써봤는데, 너무 과하게 쓰면 오히려 불편하다는 걸 알게 됐습니다. 적당한 선에서만 효과를 주는 게 훨씬 보기 좋다는 걸 직접 느꼈습니다.
             </li>
             <li>
-              <strong>반응형 디자인 설계:</strong> 다양한 기기에서 일관된 사용자 경험을 제공하기 위한 효과적인 레이아웃 설계 및 CSS 미디어 쿼리 활용법을 습득했습니다.
+              <strong>반응형 디자인의 현실적인 어려움</strong>
+              `미디어 쿼리`만 잘 쓰면 다 될 줄 알았는데, 실제로는 각 기기별로 레이아웃이 미묘하게 달라져서 예상보다 시간이 오래 걸렸습니다. 직접 여러 기기에서 테스트하며, 작은 부분까지 신경 썼습니다.
             </li>
             <li>
-              <strong>SPA 라우팅 및 성능 최적화:</strong> React Router를 활용한 SPA 라우팅 구현 및 코드 분할(code splitting), 지연 로딩(lazy loading)을 통한 초기 로딩 시간 최적화 방법을 학습했습니다.
+              <strong>`SPA` 라우팅과 성능 최적화</strong>
+              `코드 분할`, `lazy loading` 등으로 초기 로딩 속도를 개선하려고 노력하였습니다. 번들 크기 줄이기 위해 라이브러리도 직접 최적화해봤고, 그 과정에서 `번들 분석 도구`도 처음 써봤습니다.
             </li>
           </LearnedPointsList>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>
           <h3>관련 링크</h3>
-          <p><StyledLink href="https://github.com/username/portfolio-website" target="_blank" rel="noopener noreferrer">GitHub Repository</StyledLink></p>
-          <p><StyledLink href="https://username.github.io/portfolio" target="_blank" rel="noopener noreferrer">라이브 데모</StyledLink></p>
+          <p><StyledLink href="https://github.com/kapu0377/port" target="_blank" rel="noopener noreferrer">`GitHub Repository`</StyledLink></p>
         </ProjectSection>
 
         <ProjectSection variants={itemVariants}>

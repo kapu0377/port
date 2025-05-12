@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
+import styled from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -13,6 +14,13 @@ const GlobalStyle = createGlobalStyle`
     --placeholder-bg: #e0e0e0;
     --button-bg: #f9f9f9;
     --button-border: transparent;
+    --section-padding: 2rem;
+    --border-radius: 8px;
+    --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+    --content-max-width: 1200px;
+    --container-padding: 1rem;
 
     /* Base settings */
     color-scheme: light;
@@ -33,11 +41,10 @@ const GlobalStyle = createGlobalStyle`
     --accent-color: #5dade2;
     --text-color: rgba(255, 255, 255, 0.87);
     --secondary-text-color: #bdc3c7;
-      --placeholder-bg: #424242;
+    --placeholder-bg: #424242;
     --button-bg: #333;
     --button-border: #555;
-
-      color-scheme: dark;
+    color-scheme: dark;
   }
 
   /* Apply base font styles to body */
@@ -49,19 +56,54 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100vh;
     line-height: inherit; /* Inherit from :root */
     transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
   }
 
-  /* Remove text-align: center from #root */
+  /* Global container styles */
   #root {
-    max-width: 1200px;
+    max-width: var(--content-max-width);
     margin: 0 auto;
-    padding: 2rem 0; /* Keep padding or adjust as needed */
-    /* text-align: center; */ /* Removed */
+    padding: 0; /* 컨테이너 패딩 제거 */
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
   /* Apply consistent box-sizing */
   *, *::before, *::after {
     box-sizing: border-box;
+  }
+
+  /* 표준 컨테이너 클래스 */
+  .container {
+    width: 100%;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+  }
+
+  /* 섹션 스타일 표준화 */
+  section {
+    padding: var(--section-padding) 0;
+    width: 100%;
+  }
+
+  /* 카드 및 컴포넌트 스타일 표준화 */
+  .card {
+    background: var(--main-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
   }
 
   /* Base styles for links and buttons using CSS variables */
@@ -115,19 +157,149 @@ const GlobalStyle = createGlobalStyle`
     outline: 4px auto -webkit-focus-ring-color;
   }
 
+  /* 타이포그래피 설정 표준화 */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
   h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
-    margin: 0; 
-    color: var(--primary-color);
+    font-size: 2.5rem;
   }
 
-  h2, h3, h4, h5, h6 {
-    color: var(--primary-color);
+  h2 {
+    font-size: 2rem;
   }
 
-  /* Add other global adjustments as needed */
+  h3 {
+    font-size: 1.75rem;
+  }
 
+  h4 {
+    font-size: 1.5rem;
+  }
+
+  h5 {
+    font-size: 1.25rem;
+  }
+
+  h6 {
+    font-size: 1rem;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  /* 반응형 미디어 쿼리 */
+  @media (max-width: 1200px) {
+    :root {
+      --section-padding: 1.5rem;
+      --container-padding: 1rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    :root {
+      --section-padding: 1.25rem;
+      --container-padding: 0.75rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+    }
+    
+    h2 {
+      font-size: 1.75rem;
+    }
+    
+    h3 {
+      font-size: 1.5rem;
+    }
+    
+    h4 {
+      font-size: 1.25rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    :root {
+      --section-padding: 1rem;
+      --container-padding: 0.5rem;
+    }
+    
+    h1 {
+      font-size: 1.75rem;
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+    }
+    
+    h3 {
+      font-size: 1.25rem;
+    }
+    
+    h4 {
+      font-size: 1.1rem;
+    }
+  }
 `;
 
+const PreviewBox = styled.div`
+  margin: 2rem 0;
+  border: 1px solid var(--placeholder-bg);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: var(--main-bg);
+  width: 100%;
+`;
+
+const PreviewFrame = styled.iframe`
+  width: 100%;
+  min-height: 500px;
+  border: none;
+  background: var(--main-bg);
+
+  @media (max-width: 768px) {
+    min-height: 400px;
+  }
+
+  @media (max-width: 480px) {
+    min-height: 300px;
+  }
+`;
+
+const ContentContainer = styled.div`
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+`;
+
+const Section = styled.section`
+  padding: var(--section-padding) 0;
+  width: 100%;
+`;
+
+const Card = styled.div`
+  background: var(--main-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+`;
+
+export { PreviewBox, PreviewFrame, ContentContainer, Section, Card };
 export default GlobalStyle; 

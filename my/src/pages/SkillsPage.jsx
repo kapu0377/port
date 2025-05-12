@@ -223,8 +223,8 @@ export default function Skills() {
         <HistorySection> 
           <motion.h3 variants={itemVariants}>학력사항</motion.h3>
           <motion.ul variants={itemVariants}>
-            <li>2014.03 ~ 2018.02 xx고등학교</li>
-            <li>2018.03 ~ 2023.02 xxx대학교</li>
+            <li>2014.03 ~ 2018.02 XX고등학교</li>
+            <li>2018.03 ~ 2023.02 XX대학교</li>
           </motion.ul>
         </HistorySection>
         <HistorySection> 

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/useTheme';
 import { FaSun, FaMoon } from 'react-icons/fa'; 
 
 const ToggleButton = styled.button`
