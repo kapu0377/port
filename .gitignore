@@ -7,7 +7,7 @@
 /build
 /dist
 .next
-
+.cursor/
 # Environment variables
 .env
 .env.local
