@@ -38,8 +38,28 @@
 
 ## 설정 및 환경
 - Vite 기반 빌드 환경을 사용하며, 상대 경로 import를 권장합니다.
-- 환경별 설정은 `application-*.yml`로 분리합니다. (이 부분은 현재 React 프로젝트와 직접적인 관련이 없어 보입니다. 혹시 백엔드 설정에 관한 내용인가요? React 프로젝트라면 보통 `.env` 파일을 사용합니다.)
+- 백엔드(Node.js/Express) 환경 설정은 `backend/.env` 파일을 사용하며, 다음 규칙을 따릅니다:
+    - `.env` 파일은 Git 저장소에 포함하지 않습니다. (`.gitignore`에 `backend/.env` 추가)
+    - 주요 환경 변수는 다음과 같습니다 (실제 값은 `.env` 파일에 정의):
+        - `PORT`: 백엔드 서버 실행 포트 (예: `3001`)
+        - `DB_HOST`: 데이터베이스 호스트 (예: `localhost`)
+        - `DB_USER`: 데이터베이스 사용자명
+        - `DB_PASSWORD`: 데이터베이스 비밀번호 
+        - `DB_DATABASE`: 데이터베이스 이름
+        - `SESSION_SECRET`: 세션 암호화를 위한 비밀 키 (강력하고 무작위적인 문자열로 설정)
+        - `CLIENT_URL`: CORS 허용을 위한 클라이언트(프론트엔드) 주소 (예: `http://localhost:5173`)
+        - `REDIS_HOST`: Redis 서버 호스트 (예: `127.0.0.1`)
+        - `REDIS_PORT`: Redis 서버 포트 (예: `6379`)
+    - 새로운 환경 변수 추가 시, 이 문서에도 해당 변수의 목적과 예시 값을 기록합니다.
+    - `dotenv` 패키지를 사용하여 `server.js`에서 환경 변수를 로드합니다. (`require(\'dotenv\').config();`)
+    - Google Cloud 서비스 (예: Gemini API) 인증은 사용자별로 데이터베이스(`users` 테이블의 `gemini_api_key` 컬럼)에 저장된 API 키를 사용합니다.
+    - API 키는 `backend/services/APIKeyService.js`를 통해 안전하게 조회 및 복호화되어 사용됩니다.
 
 ## 에러 처리 및 사용자 경험
-- 전역 예외 처리는 `ErrorController`로 일관된 피드백을 제공합니다. (이 역시 백엔드 관련 내용으로 보입니다. 프론트엔드에서는 보통 ErrorBoundary 컴포넌트나 유사한 패턴을 사용합니다.)
+- 전역 예외 처리는 `ErrorController`로 일관된 피드백을 제공합니다. 
 - 중복된 설명이나 중복된 UI 요소는 제거하여 사용자에게 명확한 정보를 제공합니다.
+
+## 데이터베이스
+- 데이터베이스 상호작용 시에는 `config/db.js`에 설정된 커넥션 풀(`pool` 객체)을 사용합니다.
+- SQL 쿼리는 가독성을 위해 백틱(``)을 사용하여 여러 줄로 작성할 수 있습니다.
+- 가능한 경우, SQL 인젝션 공격을 방지하기 위해 파라미터화된 쿼리(prepared statements)를 사용합니다.

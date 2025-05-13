@@ -1,5 +1,3 @@
-
-
 # Dependencies
 /node_modules
 
@@ -14,9 +12,11 @@
 .env.*.local
 !.env.example # .env.example 
 
+# Backend specific environment file
+backend/.env
+
 # Logs
 npm-debug.log*
-
 
 # OS generated files
 .DS_Store
@@ -25,5 +25,15 @@ Thumbs.db
 # Editor directories and files
 .vscode/
 
+# Windsurf rules
+.windsurf/
+.windsurf/rules/
+
+
 # Optional test coverage
 /coverage
+
+# Google Cloud Service Account Keys
+backend/config/secrets/
+*.json
+gen-lang-client-*.json
